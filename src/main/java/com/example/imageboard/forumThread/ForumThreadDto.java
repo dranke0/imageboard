@@ -1,7 +1,6 @@
 package com.example.imageboard.forumThread;
 
 import com.example.imageboard.comment.CommentDto;
-import com.example.imageboard.enums.ForumThreadStatus;
 import com.example.imageboard.user.UserDto;
 import lombok.Builder;
 import lombok.Data;

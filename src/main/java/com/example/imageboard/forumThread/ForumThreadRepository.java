@@ -1,6 +1,5 @@
 package com.example.imageboard.forumThread;
 
-import com.example.imageboard.enums.ForumThreadStatus;
 //import org.example.imageboard.dtos.projections.ThreadSummaryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

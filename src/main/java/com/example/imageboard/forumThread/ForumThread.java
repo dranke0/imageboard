@@ -3,7 +3,6 @@ package com.example.imageboard.forumThread;
 import com.example.imageboard.base.BaseEntity;
 import com.example.imageboard.comment.Comment;
 import com.example.imageboard.forum.Forum;
-import com.example.imageboard.enums.ForumThreadStatus;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,9 +1,7 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.base.BaseEntity;
-import com.example.imageboard.enums.UserRole;
 import com.example.imageboard.comment.Comment;
-import com.example.imageboard.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;

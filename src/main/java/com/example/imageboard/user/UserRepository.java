@@ -1,7 +1,5 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.enums.UserRole;
-import com.example.imageboard.enums.UserStatus;
 //import org.example.imageboard.dtos.projections.UserSummaryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ImageboardV2Application {
+public class ImageboardApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ImageboardV2Application.class, args);
+        SpringApplication.run(ImageboardApplication.class, args);
     }
 
 }

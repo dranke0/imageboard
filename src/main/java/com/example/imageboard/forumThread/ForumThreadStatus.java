@@ -1,4 +1,4 @@
-package com.example.imageboard.enums;
+package com.example.imageboard.forumThread;
 
 public enum ForumThreadStatus {
     OPEN,
