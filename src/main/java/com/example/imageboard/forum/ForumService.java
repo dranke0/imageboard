@@ -1,6 +1,6 @@
 package com.example.imageboard.forum;
 
-import com.example.imageboard.exception.ResourceNotFoundException;
+import com.example.imageboard.base.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;

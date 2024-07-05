@@ -1,4 +1,4 @@
-package com.example.imageboard.exception;
+package com.example.imageboard.base;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;

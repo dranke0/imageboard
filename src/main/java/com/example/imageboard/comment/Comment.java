@@ -1,7 +1,6 @@
 package com.example.imageboard.comment;
 
 import com.example.imageboard.base.BaseEntity;
-import com.example.imageboard.enums.CommentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import com.example.imageboard.user.User;
