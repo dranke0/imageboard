@@ -2,7 +2,6 @@ package com.example.imageboard.forumThread;
 
 import com.example.imageboard.forum.Forum;
 import com.example.imageboard.forum.ForumRepository;
-import com.example.imageboard.base.ResourceNotFoundException;
 import com.example.imageboard.comment.CommentDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

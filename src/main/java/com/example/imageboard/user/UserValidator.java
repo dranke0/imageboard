@@ -1,11 +1,11 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.base.BaseValidator;
+import com.example.imageboard.entity.EntityValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 @Component
-public class UserValidator extends BaseValidator {
+public class UserValidator extends EntityValidator {
     @Override
     public boolean supports(Class<?> clazz) {
         return User.class.isAssignableFrom(clazz);
@@ -13,7 +13,7 @@ public class UserValidator extends BaseValidator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        super.validate(target, errors); // Call base validation first
+        super.validate(target, errors); // Call entity validation first
 
         User user = (User) target;
 

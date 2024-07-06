@@ -1,6 +1,5 @@
 package com.example.imageboard.forum;
 
-import com.example.imageboard.base.ResourceNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

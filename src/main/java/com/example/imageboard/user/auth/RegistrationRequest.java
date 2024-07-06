@@ -1,4 +1,4 @@
-package com.example.imageboard.auth;
+package com.example.imageboard.user.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

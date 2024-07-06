@@ -1,4 +1,4 @@
-package com.example.imageboard.auth;
+package com.example.imageboard.user.auth;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

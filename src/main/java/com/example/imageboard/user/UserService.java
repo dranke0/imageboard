@@ -1,13 +1,14 @@
 package com.example.imageboard.user;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-@Service
-@RequiredArgsConstructor
-public class UserService {
+/*@Service
+public class UserService extends EntityService<User, Long> {
 
     private final UserRepository userRepository;
+
+    public UserService(EntityRepository<User, Long> repository, UserRepository userRepository) {
+        super(repository);
+        this.userRepository = userRepository;
+    }
 
     public User findByEmail(String email) {
         return userRepository.findByEmailIgnoreCase(email);
@@ -21,6 +22,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-}
+}*/
 
 

@@ -1,6 +1,6 @@
 package com.example.imageboard.forumThread;
 
-import com.example.imageboard.base.BaseEntity;
+import com.example.imageboard.entity.EntityModel;
 import com.example.imageboard.comment.Comment;
 import com.example.imageboard.forum.Forum;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"createdAt", "updatedAt", "comments"})
 @NamedEntityGraph(name = "Thread.posts", attributeNodes = @NamedAttributeNode("comments"))
-public class ForumThread extends BaseEntity {
+public class ForumThread extends EntityModel {
 
     @Column(nullable = false)
     private String title;

@@ -1,4 +1,4 @@
-package com.example.imageboard.auth;
+package com.example.imageboard.user.auth;
 
 import com.example.imageboard.user.User;
 import com.example.imageboard.user.UserRepository;

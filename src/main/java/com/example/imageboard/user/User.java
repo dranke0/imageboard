@@ -1,6 +1,6 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.base.BaseEntity;
+import com.example.imageboard.entity.EntityModel;
 import com.example.imageboard.comment.Comment;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 
-public class User extends BaseEntity {
+public class User extends EntityModel {
 
     @Column(nullable = false, unique = true)
     private String username;

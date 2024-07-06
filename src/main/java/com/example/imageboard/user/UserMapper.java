@@ -1,13 +1,15 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.base.BaseMapper;
+import com.example.imageboard.entity.EntityMapper;
 
+import lombok.NonNull;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper extends BaseMapper<User, UserDto> {
+public class UserMapper extends EntityMapper<User, UserDto> {
 
-    @Override
-    public UserDto toDto(User user) {
+    public UserMapper(@NonNull ModelMapper modelMapper) {
+        super(modelMapper);
     }
 }
