@@ -1,14 +1,9 @@
 package com.example.imageboard.user.auth;
 
-import com.example.imageboard.user.User;
 import com.example.imageboard.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime; // Add for token expiration
-import java.util.UUID;
 
 @Service
 public class PasswordResetService {
@@ -23,15 +18,15 @@ public class PasswordResetService {
     }
 
     /*public void sendResetEmail(String email) {
-        User user = userRepository.findByEmailIgnoreCase(email);
-        if (user == null) {
+        User userEntity = userRepository.findByEmailIgnoreCase(email);
+        if (userEntity == null) {
             throw new IllegalArgumentException("User not found with email: " + email); // Explicit error
         }
 
         String token = UUID.randomUUID().toString();
         userRepository.findByResetToken(token);
-        user.setResetTokenExpiration(LocalDateTime.now().plusHours(24)); // Set 24-hour expiration
-        userRepository.save(user);
+        userEntity.setResetTokenExpiration(LocalDateTime.now().plusHours(24)); // Set 24-hour expiration
+        userRepository.save(userEntity);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);

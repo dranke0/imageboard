@@ -1,15 +1,18 @@
 package com.example.imageboard.entity;
 
 import lombok.*;
+
 import java.time.LocalDateTime;
 
-@Getter // Lombok will generate getters for all fields
-@Setter // Lombok will generate setters for all fields (if needed)
-@NoArgsConstructor  // Generates a no-args constructor
-@AllArgsConstructor // Generates a constructor with all fields as arguments
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = "updatedAt")
+@ToString(callSuper = true)
 public abstract class EntityDto {
 
-    protected Long id;
-    protected LocalDateTime createdAt;
-    protected LocalDateTime updatedAt;
+    public Long id;
+    public LocalDateTime createdAt;
+    public LocalDateTime updatedAt;
 }

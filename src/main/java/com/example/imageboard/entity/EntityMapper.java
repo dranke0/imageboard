@@ -1,6 +1,5 @@
 package com.example.imageboard.entity;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,29 +15,27 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public class EntityMapper<E, D> {
 
-    @NonNull
     private final ModelMapper modelMapper;
 
-    private final Logger logger = LoggerFactory.getLogger(EntityMapper.class); // For logging
+    private final Logger logger = LoggerFactory.getLogger(EntityMapper.class);
 
     protected D mapEntityToDto(E entity) {
-        return Optional.ofNullable(entity)
-                .map(e -> modelMapper.map(e, (Class<D>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]))
-                .orElseThrow(() -> {
-                    logger.warn("Attempting to map null entity");
-                    return new EntityNotFoundException("Entity cannot be null");
-                });
+        if (entity == null) {
+            logger.error("Attempting to map null entity");
+            throw new InvalidEntityException("Entity cannot be null");
+        }
+        return modelMapper.map(entity, (Class<D>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]);
     }
 
     protected E mapDtoToEntity(D dto) {
-        return Optional.ofNullable(dto)
-                .map(d -> modelMapper.map(d, (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]))
-                .orElseThrow(() -> {
-                    logger.warn("Attempting to map null DTO");
-                    return new EntityNotFoundException("DTO cannot be null");
-                });
+        if (dto == null) {
+            logger.error("Attempting to map null DTO");
+            throw new InvalidEntityException("DTO cannot be null");
+        }
+        return modelMapper.map(dto, (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     }
 
     protected List<D> mapEntitiesToDtos(List<E> entities) {
@@ -53,4 +50,5 @@ public class EntityMapper<E, D> {
                 .collect(Collectors.toList());
     }
 }
+
 

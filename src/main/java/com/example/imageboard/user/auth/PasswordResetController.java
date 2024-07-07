@@ -23,12 +23,12 @@ public class PasswordResetController {
 
    /* @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String token, @ModelAttribute("password") String password) {
-        // Validate token, find user by token, update password
-        User user = userService.findByResetToken(token);
-        if (user != null) {
-            user.setPassword(passwordEncoder.encode(password));
-            user.setResetToken(null); // clear the reset token
-            userService.save(user);
+        // Validate token, find userEntity by token, update password
+        User userEntity = userService.findByResetToken(token);
+        if (userEntity != null) {
+            userEntity.setPassword(passwordEncoder.encode(password));
+            userEntity.setResetToken(null); // clear the reset token
+            userService.save(userEntity);
         }
         return "redirect:/login";
     }*/

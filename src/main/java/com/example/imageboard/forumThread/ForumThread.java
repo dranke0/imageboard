@@ -1,12 +1,12 @@
 package com.example.imageboard.forumThread;
 
-import com.example.imageboard.entity.EntityModel;
+import com.example.imageboard.entity.BaseEntity;
 import com.example.imageboard.comment.Comment;
 import com.example.imageboard.forum.Forum;
 
+import com.example.imageboard.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import com.example.imageboard.user.User;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"createdAt", "updatedAt", "comments"})
 @NamedEntityGraph(name = "Thread.posts", attributeNodes = @NamedAttributeNode("comments"))
-public class ForumThread extends EntityModel {
+public class ForumThread extends BaseEntity {
 
     @Column(nullable = false)
     private String title;
@@ -29,7 +29,7 @@ public class ForumThread extends EntityModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User userEntity;
 
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

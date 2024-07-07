@@ -12,23 +12,23 @@ import java.time.LocalDateTime;
 
 
 @MappedSuperclass
-@Getter @Setter
+@Data
 @SuperBuilder(toBuilder = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = "updatedAt")
-@ToString
-public abstract class EntityModel implements Serializable {
+@ToString(callSuper = true)
+public abstract class BaseEntity implements Serializable {
     @Serial
-    private static final long serialVersionUID = 999L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    private Long id;
 
     @CreationTimestamp
-    protected LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    protected LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 }

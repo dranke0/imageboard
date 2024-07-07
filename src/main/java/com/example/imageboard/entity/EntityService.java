@@ -1,42 +1,71 @@
 package com.example.imageboard.entity;
 
+import com.example.imageboard.user.User;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.ObjectError;
+
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
-@RequiredArgsConstructor // Lombok will create constructor
-public abstract class EntityService<T extends EntityModel, ID extends Serializable> {
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true)
+public abstract class EntityService<T extends BaseEntity, ID extends Serializable, D extends EntityDto> {
 
-    protected final EntityRepository<T, ID> repository; // Lombok will inject this dependency
+    private final EntityRepository<T, ID> repository;
+    private final EntityValidator entityValidator;
+    private final EntityMapper<T, D> entityMapper; // Specific mapper for this service
 
     @Transactional(readOnly = true)
-    public List<T> getAll() {
-        return repository.findAll();
+    public List<D> findAllDtos() {
+        log.debug("Fetching all DTOs of type: {}", entityClass());
+        List<T> entities = repository.findAll();
+        return entityMapper.mapEntitiesToDtos(entities);
     }
 
     @Transactional(readOnly = true)
-    public Optional<T> getById(ID id) {
-        return repository.findById(id);
+    public D findByIdDto(ID id) {
+        log.debug("Fetching DTO of type: {} with id: {}", entityClass(), id);
+        return entityMapper.mapEntityToDto(findOrThrow(id));
     }
 
-    @Transactional
-    public T save(T entity) {
-        return repository.save(entity);
+    @Transactional(rollbackFor = Exception.class)
+    public D save(D dto) {
+        log.debug("Saving entity from DTO of type: {}: {}", entityClass(), dto);
+        T entity = entityMapper.mapDtoToEntity(dto);
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(entity, entityClass().getSimpleName());
+        entityValidator.validate(entity, errors);
+        if (errors.hasErrors()) {
+            throw new InvalidEntityException(errors.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.toList()));
+        }
+        T savedEntity = repository.save(entity);
+        return entityMapper.mapEntityToDto(savedEntity);
     }
 
     @Transactional
     public void delete(ID id) {
+        log.debug("Deleting entity of type: {} with id: {}", entityClass(), id);
         repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true) // Added transactional annotation for potential performance benefit
     public T findOrThrow(ID id) {
-        return getById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
+    }
+
+    private Class<T> entityClass() {
+        return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 }
 

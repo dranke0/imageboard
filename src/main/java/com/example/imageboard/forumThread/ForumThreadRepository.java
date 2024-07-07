@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long> {
 
-    // Find all forumThreads created by a specific user
+    // Find all forumThreads created by a specific userEntity
     Page<ForumThread> findByUserId(Long userId, Pageable pageable);
 
     // Find all forumThreads with a specific status (e.g., OPEN, LOCKED, ARCHIVED)

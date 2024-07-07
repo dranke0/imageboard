@@ -13,10 +13,8 @@ public class UserDto extends EntityDto {
     private Long id;
     private String username;
     // private String email; // Removed due to privacy concerns
-
-    // Added optional fields
     private String avatarUrl;
     private String bio;
-    // private int postCount; // Could include the number of comments the user has made
+    // private int postCount; // Could include the number of comments the userEntity has made
     // private LocalDateTime joinDate; // Could include the registration date
 }

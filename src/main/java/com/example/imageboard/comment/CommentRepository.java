@@ -13,7 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     // Find all comments within a specific forumThread
     Page<Comment> findByForumThreadId(Long threadId, Pageable pageable); // Pageable for sorting/pagination
 
-    // Find all comments by a specific user
+    // Find all comments by a specific userEntity
     Page<Comment> findByUserId(Long userId, Pageable pageable);
 
     // Find all comments containing a keyword in the content

@@ -1,9 +1,9 @@
 package com.example.imageboard.comment;
 
-import com.example.imageboard.entity.EntityModel;
+import com.example.imageboard.entity.BaseEntity;
+import com.example.imageboard.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import com.example.imageboard.user.User;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
@@ -13,7 +13,7 @@ import com.example.imageboard.forumThread.ForumThread;
 @Getter @Setter @Builder // Lombok annotations
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
-public class Comment extends EntityModel {
+public class Comment extends BaseEntity {
 
     @Column(nullable = false, length = 5000)
     @Length(max = 5000, message = "Content cannot exceed 5,000 characters")
@@ -32,7 +32,7 @@ public class Comment extends EntityModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User userEntity;
 }
 
 

@@ -1,7 +1,7 @@
-/*package com.example.imageboard.user.auth;
+/*package com.example.imageboard.userEntity.auth;
 
-import com.example.imageboard.user.User;
-import com.example.imageboard.user.UserService;
+import com.example.imageboard.userEntity.User;
+import com.example.imageboard.userEntity.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +21,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.save(user);
+    public String registerUser(@ModelAttribute User userEntity) {
+        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+        userService.save(userEntity);
         return "redirect:/login";
     }
 }*/

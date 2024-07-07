@@ -1,6 +1,6 @@
 package com.example.imageboard.user;
 
-public enum UserStatus {
+public enum AccountStatus {
     ACTIVE,
     INACTIVE,
     BANNED

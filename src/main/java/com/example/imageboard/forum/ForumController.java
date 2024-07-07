@@ -43,7 +43,7 @@ public class ForumController {
         try {
             ForumDto forumDto = forumService.updateBoard(id, updatedForumDto);
             return ResponseEntity.ok(forumDto);
-        } catch (ResourceNotFoundException e) {
+        } catch (ForumNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -53,7 +53,7 @@ public class ForumController {
         try {
         forumService.deleteBoard(id);
         return ResponseEntity.noContent().build(); // Correct HTTP status code
-    } catch (ResourceNotFoundException e) {
+    } catch (ForumNotFoundException e) {
         return ResponseEntity.notFound().build();}
     }
 }

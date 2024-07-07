@@ -6,8 +6,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -15,42 +13,47 @@ public class EntityValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return EntityDto.class.isAssignableFrom(clazz);
+        return BaseEntity.class.isAssignableFrom(clazz) || EntityDto.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        if (!(target instanceof EntityModel)) {
-            log.warn("Object is not an instance of EntityModel. Skipping entity validation.");
-            return;
+        if (target instanceof BaseEntity) {
+            validateBaseEntity((BaseEntity) target, errors);
+        } else if (target instanceof EntityDto) {
+            validateEntityDto((EntityDto) target, errors);
+        } else {
+            log.warn("Unsupported object type for validation: {}", target.getClass().getName());
         }
+    }
 
-        EntityModel entityModel = (EntityModel) target;
-        List<String> validationErrors = new ArrayList<>();
+    private void validateBaseEntity(BaseEntity entity, Errors errors) {
+        validateId(entity.getId(), errors);
+        validateCreatedAt(entity.getCreatedAt(), errors);
+        validateUpdatedAt(entity.getUpdatedAt(), errors);
+    }
 
-        // ID Validation
-        if (entityModel.getId() == null || entityModel.getId() <= 0) {
-            validationErrors.add("ID must be a positive integer");
+    private void validateEntityDto(EntityDto dto, Errors errors) {
+        validateId(dto.getId(), errors);
+        validateCreatedAt(dto.getCreatedAt(), errors);
+        validateUpdatedAt(dto.getUpdatedAt(), errors);
+    }
+
+    private void validateId(Long id, Errors errors) {
+        if (id == null || id <= 0) {
+            errors.rejectValue("id", "invalid.id", "ID must be a positive integer");
         }
+    }
 
-        // CreatedAt Validation
-        LocalDateTime createdAt = entityModel.getCreatedAt();
+    private void validateCreatedAt(LocalDateTime createdAt, Errors errors) {
         if (createdAt == null || createdAt.isAfter(LocalDateTime.now())) {
-            validationErrors.add("Creation date must be in the past");
+            errors.rejectValue("createdAt", "invalid.createdAt", "Creation date must be in the past");
         }
+    }
 
-        // UpdatedAt Validation (If applicable)
-        LocalDateTime updatedAt = entityModel.getUpdatedAt();
+    private void validateUpdatedAt(LocalDateTime updatedAt, Errors errors) {
         if (updatedAt != null && updatedAt.isAfter(LocalDateTime.now())) {
-            validationErrors.add("Update date cannot be in the future");
-        }
-
-        if (!validationErrors.isEmpty()) {
-            for (String errorMessage : validationErrors) {
-                errors.rejectValue("entity", "invalid.entityModel", errorMessage);
-            }
+            errors.rejectValue("updatedAt", "invalid.updatedAt", "Update date cannot be in the future");
         }
     }
 }
-
-
