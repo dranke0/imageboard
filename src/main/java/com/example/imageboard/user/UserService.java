@@ -49,6 +49,17 @@ public class UserService extends EntityService<User, Long, UserDto> {
     public Optional<User> findByResetToken(String token) {
         return Optional.ofNullable(userRepository.findByResetToken(token));
     }
+
+    public List<User> searchUsers(String query) {
+        if (query == null || query.isBlank()) {
+            throw new IllegalArgumentException("Search query cannot be empty");
+        }
+        log.debug("Searching users with query: {}", query);
+        return userRepository.searchUsers(query); // Call the new repository method
+    }
+
+    public UserDto registerUser(UserDto userDto) {
+    }
 }
 
 

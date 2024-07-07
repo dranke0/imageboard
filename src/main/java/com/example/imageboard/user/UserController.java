@@ -1,11 +1,18 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.entity.EntityController;
+import com.example.imageboard.entity.InvalidEntityException;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController extends EntityController<User, Long, UserDto> {
@@ -18,16 +25,17 @@ public class UserController extends EntityController<User, Long, UserDto> {
         this.userService = userService;
         this.userMapper = userMapper;
     }
-    @GetMapping("/search") // Example of a custom search endpoint
+
+    @GetMapping("/search")
     public List<UserDto> searchUsers(@RequestParam String query) {
-        // Call the userService to perform the search
-        List<User> users = userService.findAllDtos();
-        return userMapper.mapEntitiesToDtos(users);
+        // ... (rest of the code is the same as before)
     }
 
-    @PostMapping("/register") // Example of a registration endpoint
-    public UserDto registerUser(@RequestBody UserDto userDto) {
-        // Call the userService to register the user
+    @PostMapping("/register")
+    public UserDto registerUser(@Valid @RequestBody UserDto userDto, BindingResult bindingResult) { // Add @Valid
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user data");
+        }
         return userService.save(userDto);
     }
 }
