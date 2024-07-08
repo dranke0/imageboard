@@ -1,7 +1,6 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.entity.EntityController;
-import com.example.imageboard.entity.InvalidEntityException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -8,35 +8,43 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter @Setter
-@SuperBuilder(toBuilder = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Builder
+@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@ToString(callSuper = true)
+@EqualsAndHashCode
+@ToString
 @Entity
+public class User implements EntityModel {
 
-public class User extends EntityModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long Id;
 
-    @NotBlank
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
     @Column(nullable = false, unique = true)
     private String username;
 
     @Email
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank
     @Size(min = 8)
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
     private String token; // Token for userEntity authentication
 
     @Column(nullable = false)

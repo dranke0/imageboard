@@ -1,7 +1,6 @@
 package com.example.imageboard.user;
 
 //import org.example.imageboard.dtos.projections.UserSummaryDto;
-import com.example.imageboard.entity.EntityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends EntityRepository<User, Long> {
+public interface UserRepository extends org.springframework.data.jpa.repository.JpaRepository<User, Long> {
     User findByUsernameIgnoreCase(String username);
     User findByEmailIgnoreCase(String email);
     User findByResetToken(String resetToken);

@@ -1,6 +1,5 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.entity.EntityValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
