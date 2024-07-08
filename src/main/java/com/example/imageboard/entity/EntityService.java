@@ -7,7 +7,10 @@ import java.util.List;
 public interface EntityService<T extends EntityModel, ID extends Serializable, D extends EntityDto> {
     List<D> findAll();
     D findById(ID id) throws EntityNotFoundException;
-    D save(D dto);
+    D create(D dto);
+    D create(T model);
+    D update(D dto);
+    D update(T model);
     void delete(ID id);
     T findOrThrow(ID id);
 }

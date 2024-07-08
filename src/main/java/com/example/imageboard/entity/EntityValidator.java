@@ -1,5 +1,7 @@
 package com.example.imageboard.entity;
 
+import com.example.imageboard.entity.implementation.EntityDtoImpl;
+import com.example.imageboard.entity.implementation.EntityModelImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -13,27 +15,27 @@ public class EntityValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return EntityModel.class.isAssignableFrom(clazz) || EntityDto.class.isAssignableFrom(clazz);
+        return EntityModelImpl.class.isAssignableFrom(clazz) || EntityDtoImpl.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
         if (target instanceof EntityModel) {
-            validateBaseEntity((EntityModel) target, errors);
-        } else if (target instanceof EntityDto) {
-            validateEntityDto((EntityDto) target, errors);
+            validateBaseEntity((EntityModelImpl) target, errors);
+        } else if (target instanceof EntityDtoImpl) {
+            validateEntityDto((EntityDtoImpl) target, errors);
         } else {
             log.warn("Unsupported object type for validation: {}", target.getClass().getName());
         }
     }
 
-    private void validateBaseEntity(EntityModel entity, Errors errors) {
+    private void validateBaseEntity(EntityModelImpl entity, Errors errors) {
         validateId(entity.getId(), errors);
         validateCreatedAt(entity.getCreatedAt(), errors);
         validateUpdatedAt(entity.getUpdatedAt(), errors);
     }
 
-    private void validateEntityDto(EntityDto dto, Errors errors) {
+    private void validateEntityDto(EntityDtoImpl dto, Errors errors) {
         validateId(dto.getId(), errors);
         validateCreatedAt(dto.getCreatedAt(), errors);
         validateUpdatedAt(dto.getUpdatedAt(), errors);
