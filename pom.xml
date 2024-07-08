@@ -11,8 +11,8 @@
     <groupId>com.example</groupId>
     <artifactId>imageboardV2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>imageboardV2</name>
-    <description>imageboardV2</description>
+    <name>imageboard</name>
+    <description>imageboard</description>
     <url/>
     <licenses>
         <license/>
@@ -104,6 +104,21 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>4.11.0</version> <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>

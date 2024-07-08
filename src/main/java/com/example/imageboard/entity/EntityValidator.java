@@ -13,13 +13,13 @@ public class EntityValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return BaseEntity.class.isAssignableFrom(clazz) || EntityDto.class.isAssignableFrom(clazz);
+        return EntityModel.class.isAssignableFrom(clazz) || EntityDto.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        if (target instanceof BaseEntity) {
-            validateBaseEntity((BaseEntity) target, errors);
+        if (target instanceof EntityModel) {
+            validateBaseEntity((EntityModel) target, errors);
         } else if (target instanceof EntityDto) {
             validateEntityDto((EntityDto) target, errors);
         } else {
@@ -27,7 +27,7 @@ public class EntityValidator implements Validator {
         }
     }
 
-    private void validateBaseEntity(BaseEntity entity, Errors errors) {
+    private void validateBaseEntity(EntityModel entity, Errors errors) {
         validateId(entity.getId(), errors);
         validateCreatedAt(entity.getCreatedAt(), errors);
         validateUpdatedAt(entity.getUpdatedAt(), errors);

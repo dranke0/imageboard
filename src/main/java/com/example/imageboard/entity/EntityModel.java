@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = "updatedAt")
 @ToString(callSuper = true)
-public abstract class BaseEntity implements Serializable {
+public abstract class EntityModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

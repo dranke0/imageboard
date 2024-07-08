@@ -1,6 +1,6 @@
 package com.example.imageboard.comment;
 
-import com.example.imageboard.entity.BaseEntity;
+import com.example.imageboard.entity.EntityModel;
 import com.example.imageboard.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import com.example.imageboard.forumThread.ForumThread;
 @Getter @Setter @Builder // Lombok annotations
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
-public class Comment extends BaseEntity {
+public class Comment extends EntityModel {
 
     @Column(nullable = false, length = 5000)
     @Length(max = 5000, message = "Content cannot exceed 5,000 characters")

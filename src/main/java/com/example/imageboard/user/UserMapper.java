@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UserMapper extends EntityMapper<User, UserDto> {
+public class UserMapper implements EntityMapper<User, UserDto> {
 
     @NonNull
     private final ModelMapper modelMapper = new ModelMapper();

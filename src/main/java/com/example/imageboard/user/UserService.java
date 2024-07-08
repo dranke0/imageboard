@@ -3,7 +3,9 @@ package com.example.imageboard.user;
 import com.example.imageboard.entity.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.Optional;
 @Slf4j
 public class UserService extends EntityService<User, Long, UserDto> {
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -23,6 +27,7 @@ public class UserService extends EntityService<User, Long, UserDto> {
         super(repository, entityValidator, entityMapper);
         this.userRepository = (UserRepository) repository;
         this.userMapper = (UserMapper) entityMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> findUsersByRole(UserRole role) {
@@ -58,7 +63,8 @@ public class UserService extends EntityService<User, Long, UserDto> {
         return userRepository.searchUsers(query); // Call the new repository method
     }
 
-    public UserDto registerUser(UserDto userDto) {
+    public Optional<UserDto> registerUser(UserDto userDto) {
+        return Optional.of(userRepository.save(userDto));
     }
 }
 

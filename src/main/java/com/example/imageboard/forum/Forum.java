@@ -1,6 +1,6 @@
 package com.example.imageboard.forum;
 
-import com.example.imageboard.entity.BaseEntity;
+import com.example.imageboard.entity.EntityModel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +12,7 @@ import com.example.imageboard.forumThread.ForumThread;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false, exclude = "forumThreads") // Exclude forumThreads to avoid recursion
-public class Forum extends BaseEntity {
+public class Forum extends EntityModel {
 
     @Column(nullable = false, unique = true)
     private String name;
