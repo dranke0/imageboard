@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
-public class UserController extends EntityController<User, Long, UserDto, UserService> {
+public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;

@@ -1,33 +1,34 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.entity.EntityModel;
 import com.example.imageboard.comment.Comment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Data
-@Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
+@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
-public class User implements EntityModel {
+public class User extends AbstractPersistable<Long> implements  UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+    private Long id;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -45,11 +46,11 @@ public class User implements EntityModel {
     @Column(nullable = false)
     private String password;
 
-    private String token; // Token for userEntity authentication
+    private Jwt jwt; // Token for userEntity authentication
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountStatus status = AccountStatus.ACTIVE;
+    private UserStatus status = UserStatus.ACTIVE;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -57,6 +58,12 @@ public class User implements EntityModel {
 
     @URL
     private String avatarUrl;
+
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
+    private GrantedAuthority authorities;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
