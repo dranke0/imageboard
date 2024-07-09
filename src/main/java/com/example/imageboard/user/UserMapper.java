@@ -1,55 +1,32 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.entity.EntityMapper;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Component
-@RequiredArgsConstructor
-@Slf4j
-public class UserMapper implements EntityMapper<User, UserDto> {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    @NonNull
-    private final ModelMapper modelMapper = new ModelMapper();
-    private final Logger logger = LoggerFactory.getLogger(EntityMapper.class);
+    // Single Entity to DTO (with authorities mapping)
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "authorities", expression = "java(user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))")
+    Optional<UserDto> toDto(Optional<User> user);
 
-    public UserDto mapEntityToDto(User userEntity) throws UserNotFoundException {
-        return Optional.ofNullable(userEntity)
-                .map(e -> modelMapper.map(e, UserDto.class))
-                .orElseThrow(() -> {
-                    logger.warn("Attempting to map null entity");
-                    return new UserNotFoundException("User cannot be null");
-                });
-    }
+    // Single DTO to Entity (ignoring authorities)
+    @Mapping(target = "username", source = "username")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "authorities", ignore = true)
+    Optional<User> toEntity(Optional<UserDto> userDto);
 
-    public User mapDtoToEntity(UserDto userDto) throws EntityNotFoundException {
-        return Optional.ofNullable(userDto)
-                .map(d -> modelMapper.map(d, User.class))
-                .orElseThrow(() -> {
-                    logger.warn("Attempting to map null DTO");
-                    return new UserNotFoundException("DTO cannot be null");
-                });
-    }
+    // List of Entities to List of DTOs
+    List<UserDto> toDtoList(List<User> users);
 
-    public List<UserDto> mapEntitiesToDtos(List<User> entities) {
-        return entities.stream()
-                .map(this::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<User> mapDtosToEntities(List<UserDto> dtos) {
-        return dtos.stream()
-                .map(this::mapDtoToEntity)
-                .collect(Collectors.toList());
-    }
+    // List of DTOs to List of Entities
+    List<User> toEntityList(List<UserDto> userDtos);
 }
+
+
+

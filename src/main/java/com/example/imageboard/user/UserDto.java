@@ -1,27 +1,27 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.entity.EntityDto;
-import com.fasterxml.jackson.annotation.JsonInclude; // For optional field handling
+import com.fasterxml.jackson.annotation.JsonInclude
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter @Setter
+@Data
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL) // Include only non-null fields in JSON
-public class UserDto implements EntityDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserDto implements UserDetails {
     private Long id;
     private String username;
-    // private String email; // Removed due to privacy concerns
+    private String password;
+    private String email;
     private String avatarUrl;
-    private String bio;
+    private UserStatus status;
+    private UserRole role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    // private int postCount; // Could include the number of comments the userEntity has made
-    // private LocalDateTime joinDate; // Could include the registration date
-
-    // Copilot how do I improve this User class
+    private List<String> authorities;
 }

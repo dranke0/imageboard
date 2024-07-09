@@ -9,9 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 
 import java.time.LocalDateTime;
@@ -24,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "users")
 public class User extends AbstractPersistable<Long> implements  UserDetails {
 
     @Id
@@ -46,7 +45,11 @@ public class User extends AbstractPersistable<Long> implements  UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private Jwt jwt; // Token for userEntity authentication
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "authority")
+    private List<String> authorities;
+
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -58,12 +61,6 @@ public class User extends AbstractPersistable<Long> implements  UserDetails {
 
     @URL
     private String avatarUrl;
-
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean isCredentialsNonExpired;
-    private boolean isEnabled;
-    private GrantedAuthority authorities;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

@@ -1,71 +1,68 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.entity.*;
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+import jakarta.validation.Valid;
 import java.util.Optional;
 
+@Data
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
-@Slf4j
-public class UserService extends EntityService<User, Long, UserDto> {
+@Transactional
+public class UserService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    // Constructor Injection with qualifiers
-    public UserService(@Qualifier("userRepository") EntityRepository<User, Long> repository,
-                       EntityValidator entityValidator,
-                       @Qualifier("userMapper") EntityMapper<User, UserDto> entityMapper) {
-        super(repository, entityValidator, entityMapper);
-        this.userRepository = (UserRepository) repository;
-        this.userMapper = (UserMapper) entityMapper;
-        this.passwordEncoder = passwordEncoder;
+    public UserDto create(@Valid User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user = userRepository.save(user)
+        return userMapper.toDto(user);
     }
 
-    public List<User> findUsersByRole(UserRole role) {
-        return userRepository.findByRole(role);
+    public UserDto findByEmail(String email) {
+       User user = userRepository.findByEmailIgnoreCase(email);
+       return userMapper.toDto(user);
     }
 
-    @Override
-    public UserDto save(UserDto userDto) {
-        log.debug("Saving user dto: {}", userDto);
-        return super.save(userDto);
+    public UserDto findByResetToken(String token) {
+        User user = userRepository.findByResetToken(token);
+        return userMapper.toDto(user);
     }
 
-    @Transactional
-    public User save(User userEntity) { // Renamed save to saveEntity
-        log.debug("Saving user entity: {}", userEntity);
-        userRepository.save(userEntity);
-        return userEntity; // Return the saved entity if needed
+    public UserDto findById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.map(userMapper::toDto).orElse(null);
+
     }
 
-    public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmailIgnoreCase(email));
+    public Optional<UserDto> findByUsername(String username) {
+       User user = userRepository.findByUsernameIgnoreCase(username)
+        return Optional.ofNullable(userMapper.toDto(user));
     }
 
-    public Optional<User> findByResetToken(String token) {
-        return Optional.ofNullable(userRepository.findByResetToken(token));
+    public UserDto update(@Valid UserDto userDto) {
+        User existingUser = userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userDto.getId()));
+        User user  = userMapper.toEntity(userDto);
+        return userMapper.toDto(userRepository.save(existingUser));
     }
 
-    public List<User> searchUsers(String query) {
-        if (query == null || query.isBlank()) {
-            throw new IllegalArgumentException("Search query cannot be empty");
-        }
-        log.debug("Searching users with query: {}", query);
-        return userRepository.searchUsers(query); // Call the new repository method
-    }
-
-    public Optional<UserDto> registerUser(UserDto userDto) {
-        return Optional.of(userRepository.save(userDto));
+    public void delete(Long id) {
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        userRepository.delete(userToDelete);
     }
 }
+
 
 
