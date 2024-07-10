@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -23,5 +24,5 @@ public class UserDto implements UserDetails {
     private UserRole role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<String> authorities;
+    private List<GrantedAuthority> authorities;
 }

@@ -1,6 +1,7 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.comment.Comment;
+import com.example.imageboard.role.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -9,11 +10,18 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static jakarta.persistence.FetchType.EAGER;
 
 
 @Data
@@ -21,10 +29,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "users")
-public class User extends AbstractPersistable<Long> implements  UserDetails {
+public class User extends AbstractPersistable<Long> implements UserDetails, Principal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,19 +48,12 @@ public class User extends AbstractPersistable<Long> implements  UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "authority")
-    private List<String> authorities;
-
+    @ManyToMany(fetch = EAGER)
+    private List<Role> roles;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserStatus status = UserStatus.ACTIVE;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.USER;
+    private UserStatus status;
 
     @URL
     private String avatarUrl;
@@ -66,4 +66,17 @@ public class User extends AbstractPersistable<Long> implements  UserDetails {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getName() {
+        return username;
+    }
 }

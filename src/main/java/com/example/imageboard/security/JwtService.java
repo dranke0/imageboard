@@ -1,4 +1,4 @@
-package com.example.imageboard.auth;
+package com.example.imageboard.security;
 
 
 import io.jsonwebtoken.Claims;
