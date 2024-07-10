@@ -1,41 +1,47 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.entity.EntityController;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
+@Validated
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
-    public UserController(@Qualifier("userService") UserService userService,
-                          @Qualifier("userMapper") UserMapper userMapper) {
-        super(userService);
-        this.userService = userService;
-        this.userMapper = userMapper;
+
+    @GetMapping
+    @ResponseBody
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
     }
 
-    @GetMapping("/search")
-    public List<UserDto> searchUsers(@RequestParam String query) {
-        // ... (rest of the code is the same as before)
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
     }
 
-    @PostMapping("/register")
-    public UserDto registerUser(@Valid @RequestBody UserDto userDto, BindingResult bindingResult) { // Add @Valid
-        if (bindingResult.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user data");
-        }
-        return userService.save(userDto);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public User createUser(@Valid @RequestBody UserDto userDto) {
+        return userService.createUser(userDto);
+    }
+
+    @PutMapping("/{id}")
+    public UserDto updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDto updatedUserDto) {
+        return userService.updateUser(id, updatedUserDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
     }
 }
 

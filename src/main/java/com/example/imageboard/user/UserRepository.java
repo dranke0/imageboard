@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> { ;
-    User findByUsernameIgnoreCase(String username);
-    User findByEmailIgnoreCase(String email);
+    User findByUsername(String username);
+    User findByEmail(String email);
     User findByResetToken(String resetToken);
 }

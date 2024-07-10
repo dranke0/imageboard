@@ -17,6 +17,7 @@ import java.util.List;
 
 
 @Data
+@Builder(toBuilder = true )
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -28,11 +29,6 @@ public class User extends AbstractPersistable<Long> implements  UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -64,4 +60,10 @@ public class User extends AbstractPersistable<Long> implements  UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

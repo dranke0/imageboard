@@ -1,6 +1,6 @@
 package com.example.imageboard.user;
 
-import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
 import lombok.Data;
