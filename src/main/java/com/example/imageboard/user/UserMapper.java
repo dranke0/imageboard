@@ -5,7 +5,6 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-// UserMapper.java
 @Mapper(componentModel = "spring") // For Spring integration
 public interface UserMapper {
     UserDto toDto(User user);

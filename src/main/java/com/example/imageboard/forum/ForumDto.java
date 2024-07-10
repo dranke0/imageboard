@@ -1,16 +1,15 @@
 package com.example.imageboard.forum;
 
-import com.example.imageboard.entity.EntityDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 @Builder
-public class ForumDto extends EntityDto {
+public class ForumDto {
     private Long id;
     private String name;
     private String description;

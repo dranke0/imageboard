@@ -25,10 +25,9 @@ import static jakarta.persistence.FetchType.EAGER;
 
 
 @Data
-@Builder(toBuilder = true )
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User extends AbstractPersistable<Long> implements UserDetails, Principal {

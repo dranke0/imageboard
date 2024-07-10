@@ -1,4 +1,11 @@
-package com.example.imageboard.user.test;
+package com.example.imageboard.user;
+
+import com.example.imageboard.user.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 @SpringBootTest
 class UserServiceTest {

@@ -3,6 +3,7 @@ package com.example.imageboard.forumThread;
 import com.example.imageboard.forum.Forum;
 import com.example.imageboard.forum.ForumRepository;
 import com.example.imageboard.comment.CommentDto;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,6 @@ public class ForumThreadService {
 
     private final ForumThreadRepository forumThreadRepository;
     private final ForumRepository forumRepository;
-    private final ModelMapper modelMapper;
 
     public List<ForumThreadDto> getAllThreads() {
         List<ForumThread> forumThreads = forumThreadRepository.findAll();
@@ -38,7 +38,7 @@ public class ForumThreadService {
     public ForumThreadDto getThreadById(Long id) {
         return forumThreadRepository.findById(id)
             .map(this::convertToForumThreadDto) // Use helper method to convert with comments
-            .orElseThrow(() -> new ResourceNotFoundException("ForumThread", id.toString()));
+            .orElseThrow(() -> new EntityNotFoundException("ForumThread", id.toString()));
     }
 
     @Transactional
@@ -97,7 +97,7 @@ public class ForumThreadService {
     private ForumThreadDto convertToForumThreadDto(ForumThread forumThread) {
         ForumThreadDto forumThreadDto = modelMapper.map(forumThread, ForumThreadDto.class);
         forumThreadDto.setPosts(forumThread.getComments().stream()
-                .map(post -> modelMapper.map(post, CommentDto.class))
+                .map(post -> this::convertToForumThreadDto)
                 .collect(Collectors.toList()));
         return forumThreadDto;
     }
