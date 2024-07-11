@@ -1,6 +1,7 @@
 package com.example.imageboard.comment;
 
 import com.example.imageboard.user.User;
+import com.example.imageboard.forumThread.ForumThread;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,18 +9,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
-import com.example.imageboard.forumThread.ForumThread;
-
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter @Builder
-@NoArgsConstructor @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"createdAt", "updatedAt"})
+@Table(name = "comments") // Explicitly define the table name
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id") // Compare equality based on the id field only
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 5000)
@@ -31,23 +33,23 @@ public class Comment {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private CommentStatus status = CommentStatus.ACTIVE; // Default status
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id", nullable = false)
-    private ForumThread forumThread;
+    private ForumThread forumThread; // Use the class name ForumThread instead of thread
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @CreationTimestamp
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 }
+
 
 
