@@ -13,8 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments") // Explicitly define the table name
-@Getter
-@Builder
+@Getter @Setter @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id") // Compare equality based on the id field only

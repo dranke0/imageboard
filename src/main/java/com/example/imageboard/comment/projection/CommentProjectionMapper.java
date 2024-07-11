@@ -7,19 +7,15 @@ import com.example.imageboard.user.mapper.PublicUserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = PublicUserMapper.class)
-public abstract class CommentProjectionMapper {
-
-    @Autowired
-    protected PublicUserMapper publicUserMapper;
+@Mapper(componentModel = "spring")
+public interface CommentProjectionMapper {
 
     @Mapping(target = "author", source = ".", qualifiedByName = "usernameToPublicUserDto")
-    public abstract CommentDto commentProjectionToCommentDto(CommentProjection commentProjection);
+    CommentDto commentProjectionToCommentDto(CommentProjection commentProjection, PublicUserMapper publicUserMapper);
 
     @Named("usernameToPublicUserDto")
-    public PublicUserDto usernameToPublicUserDto(CommentProjection commentProjection) {
+    default PublicUserDto usernameToPublicUserDto(CommentProjection commentProjection, PublicUserMapper publicUserMapper) {
         return publicUserMapper.toPublicUserDto(
                 User.builder().username(commentProjection.getAuthorUsername()).build()
         );
