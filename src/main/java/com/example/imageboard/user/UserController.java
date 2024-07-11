@@ -3,6 +3,8 @@ package com.example.imageboard.user;
 import com.example.imageboard.user.dto.AuthenticatedUserDto;
 import com.example.imageboard.user.dto.PublicUserDto;
 import com.example.imageboard.user.exception.InvalidUserException;
+import com.example.imageboard.user.exception.ErrorResponse; // Assuming you have this class
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<AuthenticatedUserDto> createUser(@Valid @RequestBody AuthenticatedUserDto userDto, BindingResult bindingResult) {
+    public ResponseEntity<AuthenticatedUserDto> createUser(@Valid @RequestBody AuthenticatedUserDto userDto, BindingResult bindingResult) throws InvalidUserException {
         if (bindingResult.hasErrors()) {
             throw new InvalidUserException(bindingResult);
         }
@@ -42,16 +43,28 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')") // Example authorization check
-    public ResponseEntity<AuthenticatedUserDto> updateUser(@PathVariable Long id, @Valid @RequestBody AuthenticatedUserDto userDto) {
+    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
+    public ResponseEntity<AuthenticatedUserDto> updateUser(@PathVariable Long id, @Valid @RequestBody AuthenticatedUserDto userDto, BindingResult bindingResult) throws InvalidUserException {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidUserException(bindingResult);
+        }
         AuthenticatedUserDto updatedUserDto = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUserDto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')") // Example authorization check
+    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Exception Handler for InvalidUserException
+    @ExceptionHandler(InvalidUserException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidUserException(InvalidUserException ex) {
+        List<InvalidUserException.CustomFieldError> errors = ex.getCustomFieldErrors();
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid user input", errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 }
+

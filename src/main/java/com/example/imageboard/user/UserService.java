@@ -41,7 +41,7 @@ public class UserService {
     }
 
     @Transactional
-    public AuthenticatedUserDto createUser(AuthenticatedUserDto userDto, BindingResult bindingResult) {
+    public AuthenticatedUserDto createUser(AuthenticatedUserDto userDto, BindingResult bindingResult) throws InvalidUserException {
         userValidator.validate(userDto, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new InvalidUserException(bindingResult);
