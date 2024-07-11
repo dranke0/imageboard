@@ -1,6 +1,7 @@
 package com.example.imageboard.forumThread;
 
 //import org.example.imageboard.dtos.projections.ThreadSummaryDto;
+import com.example.imageboard.forumThread.dto.ForumThreadDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;

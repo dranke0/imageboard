@@ -1,22 +1,26 @@
 package com.example.imageboard.forum;
 
+import com.example.imageboard.forumThread.ForumThread;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import com.example.imageboard.forumThread.ForumThread;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Getter @Setter @Builder
+@Table(name = "forums") // Explicitly set the table name to "forums"
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false, exclude = "forumThreads") // Exclude forumThreads to avoid recursion
-public class Forum  {
+@EqualsAndHashCode(of = "id") // Use only the 'id' for equality comparison
+public class Forum {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Typically preferred for auto-incrementing IDs
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -25,14 +29,14 @@ public class Forum  {
     @Column(length = 500)
     private String description;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ForumThread> forumThreads;
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default // Initialize the list when using the builder
+    private List<ForumThread> forumThreads = new ArrayList<>();
 
     @CreationTimestamp
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Builder.Default
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 }
+

@@ -1,69 +1,66 @@
 package com.example.imageboard.forum;
 
+import com.example.imageboard.forum.dto.ForumDto;
+import com.example.imageboard.forum.exception.ForumNotFoundException;  // New custom exception
+import com.example.imageboard.forum.mapper.ForumMapper; // Inject the ForumMapper
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-@Validated
 @RequiredArgsConstructor
 public class ForumService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ForumService.class);
-
     private final ForumRepository forumRepository;
-    private final ModelMapper modelMapper;
+    private final ForumMapper forumMapper; // Assuming you're using MapStruct or a similar mapper
 
-    public List<ForumDto> getAllBoards() {
-        List<Forum> forums = forumRepository.findAll();
-        logger.info("Fetched {} forums", forums.size());
-        return forums.stream()
-                .map(forum -> modelMapper.map(forum, ForumDto.class))
-                .collect(Collectors.toList());
+    public List<ForumDto> getAllForums() {
+        return forumRepository.findAll().stream()
+                .map(forumMapper::toForumDto)
+                .toList();
     }
 
-    public ForumDto getBoardById(Long id) {
-        return forumRepository.findById(id)
-                .map(forum -> modelMapper.map(forum, ForumDto.class))
-                .orElseThrow(() -> new ResourceNotFoundException("Forum", id.toString()));
-    }
-
-    @Transactional
-    public ForumDto createBoard(@Valid ForumDto forumDto) {
-        Forum forum = modelMapper.map(forumDto, Forum.class);
-        return modelMapper.map(forumRepository.save(forum), ForumDto.class);
+    public ForumDto getForumById(Long id) {
+        Forum forum = forumRepository.findById(id)
+                .orElseThrow(() -> new ForumNotFoundException(id)); // Custom exception
+        return forumMapper.toForumDto(forum);
     }
 
     @Transactional
-    public ForumDto updateBoard(Long id, @Valid ForumDto updatedForumDto) {
+    public ForumDto createForum(@Valid ForumDto forumDto) {
+        Forum forum = forumMapper.toForum(forumDto);  // Map DTO to entity
+        forum = forumRepository.save(forum);
+        return forumMapper.toForumDto(forum);
+    }
+
+    @Transactional
+    public ForumDto updateForum(Long id, @Valid ForumDto updatedForumDto) {
         Forum existingForum = forumRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Forum", id.toString()));
-        modelMapper.map(updatedForumDto, existingForum); // Update the existing forum
-        return modelMapper.map(forumRepository.save(existingForum), ForumDto.class);
+                .orElseThrow(() -> new ForumNotFoundException(id));
+        forumMapper.updateForumFromDto(updatedForumDto, existingForum); // Update entity using mapper
+        existingForum = forumRepository.save(existingForum);
+        return forumMapper.toForumDto(existingForum);
     }
 
-    public void deleteBoard(Long id) {
+    @Transactional
+    public void deleteForum(Long id) {
         if (!forumRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Forum", id.toString());
+            throw new ForumNotFoundException(id);
         }
         forumRepository.deleteById(id);
     }
-    private long getTotalBoards() {
+
+    public long getTotalForums() {
         return forumRepository.count();
     }
-    public Page<Forum> getMostActiveBoards(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return forumRepository.findMostActiveBoards(pageable);
+
+    public Page<ForumDto> getMostActiveForums(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return forumRepository.findAllForumDtos(pageable);
     }
 }

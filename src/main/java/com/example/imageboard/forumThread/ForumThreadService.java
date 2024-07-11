@@ -3,6 +3,7 @@ package com.example.imageboard.forumThread;
 import com.example.imageboard.forum.Forum;
 import com.example.imageboard.forum.ForumRepository;
 import com.example.imageboard.comment.CommentDto;
+import com.example.imageboard.forumThread.dto.ForumThreadDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

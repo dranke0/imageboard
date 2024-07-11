@@ -1,7 +1,8 @@
-package com.example.imageboard.forumThread;
+package com.example.imageboard.forumThread.mapper;
 
+import com.example.imageboard.forumThread.ForumThread;
+import com.example.imageboard.forumThread.dto.ForumThreadDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

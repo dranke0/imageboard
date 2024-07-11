@@ -1,59 +1,66 @@
 package com.example.imageboard.forum;
 
+import com.example.imageboard.forum.dto.ForumDto;
+import com.example.imageboard.forum.exception.ForumNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException; // For custom error handling
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/boards")
+@RequestMapping("/api/forums") // Updated endpoint to '/api/forums' for consistency
 @RequiredArgsConstructor
-@Slf4j
 public class ForumController {
 
     private final ForumService forumService;
 
     @GetMapping
-    public List<ForumDto> getAllBoards() {
-        log.info("Fetching all boards");
-        return forumService.getAllBoards();
+    public ResponseEntity<List<ForumDto>> getAllForums() {
+        return ResponseEntity.ok(forumService.getAllForums());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ForumDto> getBoardById(@PathVariable Long id) {
-        ForumDto forumDto = forumService.getBoardById(id);
-        if (forumDto == null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ForumDto> getForumById(@PathVariable Long id) {
+        ForumDto forumDto = forumService.getForumById(id);
         return ResponseEntity.ok(forumDto);
     }
 
+    @GetMapping("/most-active")
+    public ResponseEntity<Page<ForumDto>> getMostActiveForums(Pageable pageable) {
+        return ResponseEntity.ok(forumService.getMostActiveForums(pageable.getPageNumber(), pageable.getPageSize()));
+    }
+
     @PostMapping
-    public ResponseEntity<ForumDto> createBoard(@Valid @RequestBody ForumDto forumDto) {
-        ForumDto createdBoard = forumService.createBoard(forumDto);
-        return ResponseEntity.created(URI.create("/api/boards/" + createdBoard.getId())).body(createdBoard);
+    public ResponseEntity<ForumDto> createForum(@Valid @RequestBody ForumDto forumDto) {
+        ForumDto createdForum = forumService.createForum(forumDto);
+        return ResponseEntity.created(URI.create("/api/forums/" + createdForum.getId())).body(createdForum);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ForumDto> updateBoard(@PathVariable Long id, @Valid @RequestBody ForumDto updatedForumDto) {
+    public ResponseEntity<ForumDto> updateForum(@PathVariable Long id, @Valid @RequestBody ForumDto updatedForumDto) {
         try {
-            ForumDto forumDto = forumService.updateBoard(id, updatedForumDto);
+            ForumDto forumDto = forumService.updateForum(id, updatedForumDto);
             return ResponseEntity.ok(forumDto);
         } catch (ForumNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e); // Improved error handling
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteForum(@PathVariable Long id) {
         try {
-        forumService.deleteBoard(id);
-        return ResponseEntity.noContent().build(); // Correct HTTP status code
-    } catch (ForumNotFoundException e) {
-        return ResponseEntity.notFound().build();}
+            forumService.deleteForum(id);
+            return ResponseEntity.noContent().build();
+        } catch (ForumNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e); // Improved error handling
+        }
     }
 }
+

@@ -1,5 +1,7 @@
 package com.example.imageboard.forum;
 
+import com.example.imageboard.forum.dto.ForumDto;
+import com.example.imageboard.forumThread.ForumThread;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,25 +11,28 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ForumRepository extends JpaRepository<Forum, Long> {
 
-    @Query("SELECT b FROM Forum b LEFT JOIN FETCH b.ForumThreads t GROUP BY b ORDER BY COUNT(t) DESC")
-    Page<Forum> findMostActiveBoards(Pageable pageable);
+    @Query("SELECT f FROM Forum f LEFT JOIN FETCH f.forumThreads")
+    Page<Forum> findAllWithThreads(Pageable pageable);
 
-    Forum findByName(String name);
+    @Query("SELECT f FROM Forum f WHERE LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    Page<Forum> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
-    @Query("SELECT b FROM Forum b LEFT JOIN FETCH b.threads t WHERE LOWER(b.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<Forum> findByDescriptionContaining(String keyword, Pageable pageable); // Return a Page
+    @Query("SELECT f FROM Forum f WHERE LOWER(f.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Forum> findByDescriptionContainingIgnoreCase(String keyword, Pageable pageable);
 
-    @Query("SELECT t FROM ForumThread t WHERE t.board = :board ORDER BY t.createdAt DESC")
-    Page<Thread> findRecentThreadsByBoard(Forum forum, Pageable pageable);
+    @Query("SELECT ft FROM ForumThread ft WHERE ft.forum = :forum ORDER BY ft.createdAt DESC")
+    Page<ForumThread> findRecentThreadsByForum(Forum forum, Pageable pageable);
 
-    @Query("SELECT COUNT(t) FROM ForumThread t WHERE t.board = :board")
-    Long countThreadsByBoard(Forum forum);
+    @Query("SELECT COUNT(ft) FROM ForumThread ft WHERE ft.forum = :forum")
+    Long countThreadsByForum(Forum forum);
 
-    @Query("SELECT COUNT(p) FROM Comment p WHERE p.Forumthread.board = :board")
-    Long countPostsByBoard(Forum forum);
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.forumThread.forum = :forum")
+    Long countPostsByForum(Forum forum);
 
-    @Query("SELECT new com.example.imageboard.forum.ForumDto(b.id, b.name, b.description, COUNT(t)) " +
-            "FROM Forum b LEFT JOIN b.threads t GROUP BY b")
-    Page<ForumDto> findAllBoardSummaries(Pageable pageable);
+    @Query("SELECT new com.example.imageboard.forum.dto.ForumDto(f.id, f.name, f.description, COUNT(ft)) " +
+            "FROM Forum f LEFT JOIN f.forumThreads ft GROUP BY f.id, f.name, f.description")
+    Page<ForumDto> findAllForumDtos(Pageable pageable);
+
 }
+
 

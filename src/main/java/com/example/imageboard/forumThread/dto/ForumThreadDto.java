@@ -1,6 +1,8 @@
-package com.example.imageboard.forumThread;
+package com.example.imageboard.forumThread.dto;
 
 import com.example.imageboard.comment.CommentDto;
+import com.example.imageboard.forumThread.ForumThreadStatus;
+import com.example.imageboard.user.dto.AuthenticatedUserDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,6 +18,6 @@ public class ForumThreadDto {
     private LocalDateTime updatedAt;
     private ForumThreadStatus status;
     private Long boardId;
-    private UserDto userDto; // Introduce a separate AuthorDto
+    private AuthenticatedUserDto user; // Introduce a separate AuthorDto
     private List<CommentDto> posts;
 }
