@@ -1,15 +1,20 @@
 package com.example.imageboard.user;
 
+import com.example.imageboard.user.dto.AuthenticatedUserDto;
+import com.example.imageboard.user.dto.PublicUserDto;
+import com.example.imageboard.user.exception.InvalidUserException;
+import com.example.imageboard.user.mapper.AuthenticatedUserMapper;
+import com.example.imageboard.user.mapper.PublicUserMapper;
+import com.example.imageboard.user.validator.UserValidator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import com.example.imageboard.role.Role;
 
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.validation.BindingResult;
 
 @Service
 @RequiredArgsConstructor
@@ -18,53 +23,74 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final PublicUserMapper publicUserMapper;
+    private final AuthenticatedUserMapper authenticatedUserMapper;
     private final UserValidator userValidator;
 
-    public List<UserDto> getAllUsers() {
+    public List<PublicUserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return userMapper.toDtoList(users);
+        return users.stream()
+                .map(publicUserMapper::toPublicUserDto)
+                .toList();
     }
 
-    public UserDto getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(userMapper::toDto)
+    public PublicUserDto getUserById(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return publicUserMapper.toPublicUserDto(user);
     }
 
-    public User createUser(@Valid UserDto userDto, BindingResult bindingResult) {
+    @Transactional
+    public AuthenticatedUserDto createUser(AuthenticatedUserDto userDto, BindingResult bindingResult) {
         userValidator.validate(userDto, bindingResult);
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw new InvalidUserException(bindingResult);
         }
+
         User user = User.builder()
                 .username(userDto.getUsername().toLowerCase())
                 .email(userDto.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .role(UserRole.USER)
+                .roles(userDto.getRoles().stream().map(Role::new).toList())  // Assuming you have a way to get Role entities from role names
+                .status(UserStatus.ACTIVE) // Set initial status to ACTIVE
                 .build();
-        return userRepository.save(user);
+
+        userRepository.save(user);
+        return authenticatedUserMapper.toAuthenticatedUserDto(user);
     }
 
     @Transactional
-    public UserDto updateUser(Long id, UserDto updatedUserDto) {
-        return userRepository.findById(id)
-                .map(user -> user.toBuilder() // Use toBuilder to create a new builder from the existing user
-                        .username(updatedUserDto.getUsername() != null ? updatedUserDto.getUsername().toLowerCase().trim() : user.getUsername())
-                        .email(updatedUserDto.getEmail() != null ? updatedUserDto.getEmail().toLowerCase().trim() : user.getEmail())
-                        .password(updatedUserDto.getPassword() != null ? passwordEncoder.encode(updatedUserDto.getPassword()) : user.getPassword())
-                        .authorities(updatedUserDto.getAuthorities() != null ? updatedUserDto.getAuthorities() : user.getAuthorities())
-                        .build())
-                .map(userRepository::save)
-                .map(userMapper::toDto)
+    public AuthenticatedUserDto updateUser(Long id, AuthenticatedUserDto updatedUserDto) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
+        if (updatedUserDto.getUsername() != null) {
+            user.setUsername(updatedUserDto.getUsername().toLowerCase().trim());
+        }
+
+        if (updatedUserDto.getEmail() != null) {
+            user.setEmail(updatedUserDto.getEmail().toLowerCase().trim());
+        }
+
+        if (updatedUserDto.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updatedUserDto.getPassword()));
+        }
+
+        // Update roles if necessary
+        if (updatedUserDto.getRoles() != null) {
+            user.setRoles(updatedUserDto.getRoles().stream().map(Role::new).toList());
+        }
+
+        User savedUser = userRepository.save(user);
+        return authenticatedUserMapper.toAuthenticatedUserDto(savedUser);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
-        userRepository.findById(id)
-                .ifPresent(userRepository::delete);
+        userRepository.deleteById(id);
     }
 }
+
 
 
 

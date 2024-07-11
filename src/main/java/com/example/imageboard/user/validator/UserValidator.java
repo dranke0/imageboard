@@ -1,5 +1,8 @@
-package com.example.imageboard.user;
+package com.example.imageboard.user.validator;
 
+import com.example.imageboard.user.UserRepository;
+import com.example.imageboard.user.dto.AuthenticatedUserDto;
+import com.example.imageboard.user.dto.PublicUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -12,25 +15,21 @@ import java.util.regex.Pattern;
 public class UserValidator implements Validator {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$");
-    private static final Pattern UPPERCASE_PATTERN = Pattern.compile(".*[A-Z].*");
-    private static final Pattern LOWERCASE_PATTERN = Pattern.compile(".*[a-z].*");
-    private static final Pattern DIGIT_PATTERN = Pattern.compile(".*\\d.*");
-    private static final Pattern SPECIAL_CHAR_PATTERN = Pattern.compile(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
-
     private final UserRepository userRepository;
+    private final PasswordValidator passwordValidator; // Inject the com.example.imageboard.user.validator.PasswordValidator
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return UserDto.class.isAssignableFrom(clazz);
+        return PublicUserDto.class.isAssignableFrom(clazz) || AuthenticatedUserDto.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        UserDto userDto = (UserDto) target;
-
-        validateAndSanitizeUsername(userDto.getUsername(), errors);
-        validateAndSanitizeEmail(userDto.getEmail(), errors);
-        validatePassword(userDto.getPassword(), errors);
+        if (target instanceof PublicUserDto) {
+            validatePublicUserDto((PublicUserDto) target, errors);
+        } else if (target instanceof AuthenticatedUserDto) {
+            validateAuthenticatedUserDto((AuthenticatedUserDto) target, errors);
+        }
     }
 
     private void validateAndSanitizeUsername(String username, Errors errors) {
@@ -38,7 +37,6 @@ public class UserValidator implements Validator {
             errors.rejectValue("username", "username.null", "Username cannot be null");
         } else {
             String sanitizedUsername = username.toLowerCase().trim();
-
             if (sanitizedUsername.isBlank()) {
                 errors.rejectValue("username", "username.blank", "Username cannot be blank");
             } else if (sanitizedUsername.length() < 3 || sanitizedUsername.length() > 50) {
@@ -65,22 +63,16 @@ public class UserValidator implements Validator {
         }
     }
 
-    private void validatePassword(String password, Errors errors) {
-        if (password == null) {
-            errors.rejectValue("password", "password.null", "Password cannot be null");
-        } else if (password.length() < 8) {
-            errors.rejectValue("password", "password.length", "Password must be at least 8 characters long.");
-        } else if (!isValidPassword(password)) { // Use the local isValidPassword method
-            errors.rejectValue("password", "password.strength", "Password does not meet complexity requirements.");
-        }
+    private void validatePublicUserDto(PublicUserDto userDto, Errors errors) {
+        validateAndSanitizeUsername(userDto.getUsername(), errors);
     }
 
-    private static boolean isValidPassword(String password) {
-        return password.length() >= 8 &&
-                UPPERCASE_PATTERN.matcher(password).matches() &&
-                LOWERCASE_PATTERN.matcher(password).matches() &&
-                DIGIT_PATTERN.matcher(password).matches() &&
-                SPECIAL_CHAR_PATTERN.matcher(password).matches();
+    private void validateAuthenticatedUserDto(AuthenticatedUserDto userDto, Errors errors) {
+        validateAndSanitizeUsername(userDto.getUsername(), errors);
+        validateAndSanitizeEmail(userDto.getEmail(), errors);
+        passwordValidator.validate(userDto.getPassword(), errors);  // Use com.example.imageboard.user.validator.PasswordValidator
     }
 }
+
+// Separate com.example.imageboard.user.validator.PasswordValidator Class
 

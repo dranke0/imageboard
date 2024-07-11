@@ -1,6 +1,5 @@
 package com.example.imageboard.comment;
 
-import com.example.imageboard.user.UserDto;
 import lombok.Builder;
 import lombok.Data;
 

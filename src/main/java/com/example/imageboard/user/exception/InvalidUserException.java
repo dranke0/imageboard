@@ -1,4 +1,4 @@
-package com.example.imageboard.user;
+package com.example.imageboard.user.exception;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

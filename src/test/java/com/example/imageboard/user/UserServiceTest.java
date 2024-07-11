@@ -1,6 +1,6 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.user.*;
+import com.example.imageboard.user.validator.UserValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
