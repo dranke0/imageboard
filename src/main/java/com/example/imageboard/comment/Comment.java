@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
@@ -23,12 +21,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 5000)
-    @Length(max = 5000, message = "Content cannot exceed 5,000 characters")
     private String content;
 
-    @URL(message = "Invalid image URL")
-    @Column(length = 2048, nullable = true)
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)

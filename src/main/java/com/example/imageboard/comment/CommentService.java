@@ -1,59 +1,89 @@
 package com.example.imageboard.comment;
 
+import com.example.imageboard.comment.dto.CommentDto;
 import com.example.imageboard.comment.exception.CommentNotFoundException;
+import com.example.imageboard.comment.mapper.CommentMapper;
+import com.example.imageboard.comment.validator.CommentDtoValidator;
+import com.example.imageboard.forumThread.ForumThread;
+import com.example.imageboard.forumThread.ForumThreadRepository;
+import com.example.imageboard.user.User;
+import com.example.imageboard.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
+    private final CommentDtoValidator commentDtoValidator;
+    private final UserRepository userRepository;
+    private final ForumThreadRepository forumThreadRepository;
 
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
+    public Page<CommentDto> getAllComments(Pageable pageable) {
+        return commentRepository.findAll(pageable).map(commentMapper::commentToCommentDto);
     }
 
-    // Get all comments (potentially with pagination or sorting later)
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
+    public CommentDto getCommentById(Long id) {
+        return commentRepository.findById(id)
+                .map(commentMapper::commentToCommentDto)
+                .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
-    // Get comments by user ID (assuming Comment has a user field)
-    public List<Comment> getCommentsByUserId(Long userId) {
-        return commentRepository.findByUserId(userId);
+    public Page<CommentDto> getCommentsByThreadId(Long threadId, Pageable pageable) {
+        return commentRepository.findByForumThreadId(threadId, pageable)
+                .map(commentMapper::commentToCommentDto);
     }
 
-    // Get comments for a specific post (assuming Comment has a post field)
-    public List<Comment> getCommentsByPostId(Long postId) {
-        // Example using a custom query if not directly supported
-        return commentRepository.findCommentsByPostId(postId);
+    public Page<CommentDto> getCommentsByUserId(Long userId, Pageable pageable) {
+        return commentRepository.findByUserId(userId, pageable)
+                .map(commentMapper::commentToCommentDto);
     }
 
-    // Create a new comment
-    public Comment createComment(Comment comment) {
-        return commentRepository.save(comment);
-    }
+    public CommentDto createComment(CommentDto commentDto, Long threadId, Long userId) {
+        DataBinder binder = new DataBinder(commentDto);
+        binder.addValidators(commentDtoValidator);
+        binder.validate();
+        BindingResult bindingResult = binder.getBindingResult();
 
-    // Update an existing comment (assuming you find it first)
-    public Comment updateComment(Comment updatedComment) {
-        if (commentRepository.existsById(updatedComment.getId())) {
-            return commentRepository.save(updatedComment);
-        } else {
-            throw new CommentNotFoundException("Comment not found with ID: " + updatedComment.getId());
+        if (bindingResult.hasErrors()) {
+            // Throw a custom exception or return a response with validation errors
         }
+
+        ForumThread forumThread = forumThreadRepository.findById(threadId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid thread ID: " + threadId));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
+
+        Comment comment = commentMapper.commentDtoToComment(commentDto);
+        comment.setForumThread(forumThread);
+        comment.setUser(user);
+
+        return commentMapper.commentToCommentDto(commentRepository.save(comment));
     }
 
-    // Delete a comment by ID
-    public void deleteComment(Long commentId) {
-        if (commentRepository.existsById(commentId)) {
-            commentRepository.deleteById(commentId);
-        } else {
-            throw new CommentNotFoundException("Comment not found with ID: " + commentId);
-        }
+    public CommentDto updateComment(Long id, CommentDto updatedCommentDto) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException(id));
+
+        commentMapper.updateCommentFromDto(updatedCommentDto, comment);
+
+        return commentMapper.commentToCommentDto(commentRepository.save(comment));
     }
 
-    // ... other comment-related operations ...
+    public void deleteComment(Long id) {
+        commentRepository.deleteById(id);
+    }
 }
+
 
 

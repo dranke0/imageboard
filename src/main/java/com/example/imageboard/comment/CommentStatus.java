@@ -13,9 +13,10 @@ public enum CommentStatus {
         this.displayName = displayName;
     }
 
-    @JsonValue // Use the displayName for JSON serialization
+    @JsonValue
     @Override
     public String toString() {
         return displayName;
     }
 }
+

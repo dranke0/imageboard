@@ -2,24 +2,30 @@ package com.example.imageboard.comment.mapper;
 
 import com.example.imageboard.comment.Comment;
 import com.example.imageboard.comment.dto.CommentDto;
-import com.example.imageboard.user.mapper.PublicUserMapper; // Assuming you have this mapper
+import com.example.imageboard.user.User;
+import com.example.imageboard.user.dto.PublicUserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import java.util.List;
 
-@Mapper(uses = PublicUserMapper.class)
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
-    @Mapping(target = "author", source = "user")
-    @Mapping(target = "threadId", source = "forumThread.id")
+
+    @Mapping(target = "user", source = "user") // Map User entity to PublicUserDto
     CommentDto commentToCommentDto(Comment comment);
 
-    @Mapping(target = "user", source = "author.id")
-    @Mapping(target = "forumThread", ignore = true) // We'll handle this manually in the service
+    List<CommentDto> commentsToCommentDtos(List<Comment> comments);
+
+    PublicUserDto userToPublicUserDto(User user);
+
+    // Added method for mapping DTO to Comment
+    @Mapping(target = "user", ignore = true) // Ignore the user field during mapping
     Comment commentDtoToComment(CommentDto commentDto);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "forumThread", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    void updateCommentFromCommentDto(CommentDto commentDto, @MappingTarget Comment comment);
+    @Mapping(target = "user", ignore = true) // Ignore the user field during mapping
+    @Mapping(target = "forumThread", ignore = true) // Ignore forumThread
+    void updateCommentFromDto(CommentDto commentDto, @MappingTarget Comment comment);
 }
+
+
