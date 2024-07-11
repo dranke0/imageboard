@@ -6,18 +6,23 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper
+import java.util.List;
+
+@Mapper(componentModel = "spring") // For Spring integration
 public interface ForumMapper {
 
     @Mapping(target = "threadCount", expression = "java(forum.getForumThreads().size())")
-    ForumDto toForumDto(Forum forum);
+    ForumDto forumToForumDto(Forum forum);
 
-    Forum toForum(ForumDto forumDto);
+    List<ForumDto> forumsToForumDtos(List<Forum> forums); // Add this method
 
-    // Method to update an existing Forum entity from a ForumDto
-    @Mapping(target = "id", ignore = true)         // Don't map the ID, as it's already set in the existing entity
-    @Mapping(target = "createdAt", ignore = true) // Don't update createdAt
-    @Mapping(target = "updatedAt", ignore = true) // Don't update updatedAt (it'll be handled by @UpdateTimestamp)
-    @Mapping(target = "forumThreads", ignore = true) // Don't update forumThreads
+    Forum forumDtoToForum(ForumDto forumDto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "forumThreads", ignore = true)
     void updateForumFromDto(ForumDto forumDto, @MappingTarget Forum forum);
 }
+
+

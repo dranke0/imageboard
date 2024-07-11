@@ -2,37 +2,58 @@ package com.example.imageboard.forum;
 
 import com.example.imageboard.forum.dto.ForumDto;
 import com.example.imageboard.forumThread.ForumThread;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface ForumRepository extends JpaRepository<Forum, Long> {
 
+    // Find all forums with their threads (eagerly fetching threads)
     @Query("SELECT f FROM Forum f LEFT JOIN FETCH f.forumThreads")
-    Page<Forum> findAllWithThreads(Pageable pageable);
+    List<Forum> findAllForumsWithThreads();
 
-    @Query("SELECT f FROM Forum f WHERE LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%'))")
-    Page<Forum> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    // Find all forums, but without fetching threads (useful for listing forums)
+    List<Forum> findAll(); // Using Spring Data's built-in findAll()
 
-    @Query("SELECT f FROM Forum f WHERE LOWER(f.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<Forum> findByDescriptionContainingIgnoreCase(String keyword, Pageable pageable);
+    // Find a forum by its ID (returns Optional)
+    Optional<Forum> findById(Long id);
 
+    // Find a forum by its name (returns Optional)
+    Optional<Forum> findByName(String name);
+
+    // Find forums by name (case-insensitive)
+    List<Forum> findByNameContainingIgnoreCase(String name);
+
+    // Find forums by description (case-insensitive)
+    List<Forum> findByDescriptionContainingIgnoreCase(String keyword);
+
+    // Find recent threads for a specific forum
     @Query("SELECT ft FROM ForumThread ft WHERE ft.forum = :forum ORDER BY ft.createdAt DESC")
-    Page<ForumThread> findRecentThreadsByForum(Forum forum, Pageable pageable);
+    List<ForumThread> findRecentThreadsByForum(Forum forum);
 
+    // Count threads in a specific forum
     @Query("SELECT COUNT(ft) FROM ForumThread ft WHERE ft.forum = :forum")
     Long countThreadsByForum(Forum forum);
 
+    // Count posts (comments) in a specific forum
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.forumThread.forum = :forum")
     Long countPostsByForum(Forum forum);
 
-    @Query("SELECT new com.example.imageboard.forum.dto.ForumDto(f.id, f.name, f.description, COUNT(ft)) " +
+    // Find all ForumDtos, calculate thread count on the fly
+
+    @Query("SELECT new com.example.imageboard.forum.dto.ForumDto(f.id, f.name, f.description, CAST(COUNT(ft) AS long)) " +
             "FROM Forum f LEFT JOIN f.forumThreads ft GROUP BY f.id, f.name, f.description")
-    Page<ForumDto> findAllForumDtos(Pageable pageable);
+    List<ForumDto> findAllForumDtos();
+
+    @Query("SELECT f FROM Forum f")
+    List<Forum> findAllForums(); // Correct method name
+
 
 }
+
 
 

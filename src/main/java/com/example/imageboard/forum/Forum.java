@@ -11,26 +11,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "forums") // Explicitly set the table name to "forums"
+@Table(name = "forums")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id") // Use only the 'id' for equality comparison
+@EqualsAndHashCode(of = "id")
 public class Forum {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Typically preferred for auto-incrementing IDs
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) // No validation annotations here
     private String name;
 
-    @Column(length = 500)
+    @Column(length = 500) // No validation annotations here
     private String description;
 
-    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default // Initialize the list when using the builder
+    @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // Optional FetchType.EAGER
+    @Builder.Default
     private List<ForumThread> forumThreads = new ArrayList<>();
 
     @CreationTimestamp
@@ -39,4 +40,5 @@ public class Forum {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
+
 

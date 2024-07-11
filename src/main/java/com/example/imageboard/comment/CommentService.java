@@ -2,24 +2,28 @@ package com.example.imageboard.comment;
 
 import com.example.imageboard.comment.dto.CommentDto;
 import com.example.imageboard.comment.exception.CommentNotFoundException;
+import com.example.imageboard.comment.exception.InvalidCommentException; // New custom exception
 import com.example.imageboard.comment.mapper.CommentMapper;
 import com.example.imageboard.comment.validator.CommentDtoValidator;
 import com.example.imageboard.forumThread.ForumThread;
 import com.example.imageboard.forumThread.ForumThreadRepository;
+import com.example.imageboard.forumThread.exception.ForumThreadNotFoundException;
 import com.example.imageboard.user.User;
 import com.example.imageboard.user.UserRepository;
+import com.example.imageboard.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional // Added for managing transactions
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -28,8 +32,10 @@ public class CommentService {
     private final UserRepository userRepository;
     private final ForumThreadRepository forumThreadRepository;
 
-    public Page<CommentDto> getAllComments(Pageable pageable) {
-        return commentRepository.findAll(pageable).map(commentMapper::commentToCommentDto);
+    public List<CommentDto> getAllComments() {
+        return commentRepository.findAll().stream()
+                .map(commentMapper::commentToCommentDto)
+                .collect(Collectors.toList());
     }
 
     public CommentDto getCommentById(Long id) {
@@ -38,52 +44,54 @@ public class CommentService {
                 .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
-    public Page<CommentDto> getCommentsByThreadId(Long threadId, Pageable pageable) {
-        return commentRepository.findByForumThreadId(threadId, pageable)
-                .map(commentMapper::commentToCommentDto);
+    public List<CommentDto> getCommentsByThreadId(Long threadId) {
+        return commentRepository.findCommentsByThreadIdWithUserAndThread(threadId).stream() // Fetch eagerly to avoid N+1
+                .map(commentMapper::commentToCommentDto)
+                .collect(Collectors.toList());
     }
 
-    public Page<CommentDto> getCommentsByUserId(Long userId, Pageable pageable) {
-        return commentRepository.findByUserId(userId, pageable)
-                .map(commentMapper::commentToCommentDto);
+    public List<CommentDto> getCommentsByUserId(Long userId) {
+        return commentRepository.findByUserId(userId).stream()
+                .map(commentMapper::commentToCommentDto)
+                .collect(Collectors.toList());
     }
 
     public CommentDto createComment(CommentDto commentDto, Long threadId, Long userId) {
+        // 1. Input Validation
         DataBinder binder = new DataBinder(commentDto);
         binder.addValidators(commentDtoValidator);
         binder.validate();
-        BindingResult bindingResult = binder.getBindingResult();
 
-        if (bindingResult.hasErrors()) {
-            // Throw a custom exception or return a response with validation errors
+        if (binder.getBindingResult().hasErrors()) {
+            throw new InvalidCommentException(binder.getBindingResult());
         }
 
+        // 2. Fetch Associated Entities
         ForumThread forumThread = forumThreadRepository.findById(threadId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid thread ID: " + threadId));
+                .orElseThrow(() -> new ForumThreadNotFoundException(threadId));
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
+        // 3. Map, Set, and Save
         Comment comment = commentMapper.commentDtoToComment(commentDto);
         comment.setForumThread(forumThread);
         comment.setUser(user);
-
-        return commentMapper.commentToCommentDto(commentRepository.save(comment));
+        Comment savedComment = commentRepository.save(comment);
+        return commentMapper.commentToCommentDto(savedComment);
     }
 
     public CommentDto updateComment(Long id, CommentDto updatedCommentDto) {
-        Comment comment = commentRepository.findById(id)
+        return commentRepository.findById(id)
+                .map(comment -> {
+                    commentDtoValidator.validate(updatedCommentDto, new DataBinder(updatedCommentDto).getBindingResult());
+                    commentMapper.updateCommentFromDto(updatedCommentDto, comment);
+                    return commentMapper.commentToCommentDto(commentRepository.save(comment));
+                })
                 .orElseThrow(() -> new CommentNotFoundException(id));
-
-        commentMapper.updateCommentFromDto(updatedCommentDto, comment);
-
-        return commentMapper.commentToCommentDto(commentRepository.save(comment));
     }
 
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
     }
 }
-
-
-
