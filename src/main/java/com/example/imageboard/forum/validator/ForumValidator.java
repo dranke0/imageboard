@@ -9,7 +9,7 @@ import org.springframework.validation.Validator;
 @Component
 public class ForumValidator implements Validator {
 
-    private final ForumRepository forumRepository; // Injected for checking name uniqueness
+    private final ForumRepository forumRepository;
 
     public ForumValidator(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
@@ -17,7 +17,7 @@ public class ForumValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ForumDto.class.isAssignableFrom(clazz); // This validator supports ForumDto
+        return ForumDto.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -37,8 +37,6 @@ public class ForumValidator implements Validator {
         if (forumDto.getDescription() != null && forumDto.getDescription().length() > 500) {
             errors.rejectValue("description", "forum.description.length", "Forum description must not exceed 500 characters.");
         }
-
-        // ... Add more validations as needed ...
     }
 
     // Helper method to check if a forum with the given name already exists

@@ -1,19 +1,23 @@
-package com.example.imageboard.forum;
+package com.example.imageboard.forum; // Adjust the package if needed
 
 import com.example.imageboard.forum.dto.ForumDto;
 import com.example.imageboard.forum.exception.ForumNotFoundException;
+import com.example.imageboard.forum.exception.InvalidForumException; // New custom exception
 import com.example.imageboard.forum.mapper.ForumMapper;
 import com.example.imageboard.forum.validator.ForumValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional // Use @Transactional for all methods that modify data
 public class ForumService {
     private final ForumRepository forumRepository;
     private final ForumMapper forumMapper;
@@ -32,13 +36,18 @@ public class ForumService {
     }
 
     public ForumDto getForumById(Long id) {
-        Forum forum = forumRepository.findById(id)
+        return forumRepository.findById(id)
+                .map(forumMapper::forumToForumDto)
                 .orElseThrow(() -> new ForumNotFoundException(id));
-        return forumMapper.forumToForumDto(forum);
     }
 
     public ForumDto createForum(ForumDto forumDto) {
-        forumValidator.validate(forumDto);
+        BindingResult bindingResult = new BeanPropertyBindingResult(forumDto, "forumDto");
+        forumValidator.validate(forumDto, bindingResult);  // Use BindingResult
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidForumException(bindingResult); // Throw custom exception
+        }
 
         Forum forum = forumMapper.forumDtoToForum(forumDto);
         forum = forumRepository.save(forum);
@@ -46,7 +55,12 @@ public class ForumService {
     }
 
     public ForumDto updateForum(Long id, ForumDto updatedForumDto) {
-        forumValidator.validate(updatedForumDto);
+        BindingResult bindingResult = new BeanPropertyBindingResult(updatedForumDto, "forumDto");
+        forumValidator.validate(updatedForumDto, bindingResult);  // Use BindingResult
+
+        if (bindingResult.hasErrors()) {
+            throw new InvalidForumException(bindingResult); // Throw custom exception
+        }
 
         Forum existingForum = forumRepository.findById(id)
                 .orElseThrow(() -> new ForumNotFoundException(id));
@@ -66,19 +80,21 @@ public class ForumService {
     }
 
     public List<ForumDto> getMostActiveForums(int limit) {
-        List<Forum> forums = forumRepository.findAll(); // Replace with your actual query
+        List<Forum> forums = forumRepository.findAll(); // Replace with the actual query
 
-        // Fetch threads if you need the threadCount in the DTO
+        // Fetch threads eagerly for calculating threadCount if needed
         forums.forEach(f -> f.getForumThreads().size());
 
         List<ForumDto> forumDtos = forumMapper.forumsToForumDtos(forums);
-        // Sort by thread count in descending order and limit
+
+        // Sort and limit the results
         return forumDtos.stream()
                 .sorted((f1, f2) -> f2.getThreadCount().compareTo(f1.getThreadCount()))
                 .limit(limit)
                 .collect(Collectors.toList());
     }
 }
+
 
 
 
