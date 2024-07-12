@@ -26,7 +26,35 @@ public interface CommentMapper {
     @Mapping(target = "user", ignore = true) // Ignore the user field during mapping
     @Mapping(target = "forumThread", ignore = true) // Ignore forumThread (as it should not be updated here)
     void updateCommentFromDto(CommentDto commentDto, @MappingTarget Comment comment);
+
+    Comment commentDtoToComment(CommentDto commentDto);
 }
+
+/*
+    private Long id;
+    private String content;
+    private String imageUrl;
+    private User user;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}*/
+
+/*
+    private Long id;
+
+    private String content;
+
+    private String imageUrl;
+
+    private CommentStatus status = CommentStatus.ACTIVE; // Default status
+
+    private ForumThread forumThread; // Use the class name ForumThread instead of thread
+
+    private User user;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;*/
 
 
 

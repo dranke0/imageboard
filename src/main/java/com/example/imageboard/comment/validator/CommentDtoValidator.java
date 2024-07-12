@@ -32,11 +32,6 @@ public class CommentDtoValidator implements Validator {
         if (commentDto.getUser() == null) {
             errors.rejectValue("user", "comment.user.empty", "User is required.");
         }
-
-        // Thread ID Validation (optional, depends on your use case)
-        if (commentDto.getThreadId() == null || commentDto.getThreadId() <= 0) {
-            errors.rejectValue("threadId", "comment.threadId.invalid", "Thread ID must be a positive number.");
-        }
     }
 
     private void validateContent(String content, Errors errors) {

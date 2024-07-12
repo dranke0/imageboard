@@ -11,24 +11,18 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ForumMapper {
 
-    @Mapping(target = "threadCount", expression = "java(forum.getForumThreads().size())")
-    @Mapping(target = "updatedAt", ignore = true)  // Ignore updatedAt during the mapping
-    @Mapping(target = "forumThreads", ignore = true)  // Ignore forumThreads during the mapping
-    @Mapping(target = "threadCount", expression = "java((long) forum.getForumThreads().size())")
-    ForumDto forumToForumDto(Forum forum);
+    Forum forumToForumDto(Forum forum);
 
     List<ForumDto> forumsToForumDtos(List<Forum> forums);
 
-    @Mapping(target = "updatedAt", ignore = true)  // Ignore updatedAt during the mapping
-    @Mapping(target = "forumThreads", ignore = true)  // Ignore forumThreads during the mapping
+    // Removed unnecessary mappings from forumDtoToForum
     Forum forumDtoToForum(ForumDto forumDto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "forumThreads", ignore = true)
-    void updateForumFromDto(ForumDto forumDto, @MappingTarget Forum forum);
+    void updateForumFromDto(ForumDto forumDto, @MappingTarget Forum forum); // Removed unnecessary mappings
 }
+
 
 
 
