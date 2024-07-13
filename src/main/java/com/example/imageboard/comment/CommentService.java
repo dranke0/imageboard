@@ -5,20 +5,18 @@ import com.example.imageboard.comment.exception.CommentNotFoundException;
 import com.example.imageboard.comment.exception.InvalidCommentException; // New custom exception
 import com.example.imageboard.comment.mapper.CommentMapper;
 import com.example.imageboard.comment.validator.CommentDtoValidator;
-import com.example.imageboard.forumThread.ForumThread;
-import com.example.imageboard.forumThread.ForumThreadRepository;
-import com.example.imageboard.forumThread.exception.ForumThreadNotFoundException;
+import com.example.imageboard.thread.ForumThread;
+import com.example.imageboard.thread.ThreadRepository;
+import com.example.imageboard.thread.exception.ThreadNotFoundException;
 import com.example.imageboard.user.User;
 import com.example.imageboard.user.UserRepository;
 import com.example.imageboard.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +28,7 @@ public class CommentService {
     private final CommentMapper commentMapper;
     private final CommentDtoValidator commentDtoValidator;
     private final UserRepository userRepository;
-    private final ForumThreadRepository forumThreadRepository;
+    private final ThreadRepository threadRepository;
 
     public List<CommentDto> getAllComments() {
         return commentRepository.findAll().stream()
@@ -67,8 +65,8 @@ public class CommentService {
         }
 
         // 2. Fetch Associated Entities
-        ForumThread forumThread = forumThreadRepository.findById(threadId)
-                .orElseThrow(() -> new ForumThreadNotFoundException(threadId));
+        ForumThread forumThread = threadRepository.findById(threadId)
+                .orElseThrow(() -> new ThreadNotFoundException(threadId));
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));

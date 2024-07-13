@@ -24,7 +24,7 @@ public interface CommentMapper {
     @Mapping(target = "updatedAt", ignore = true) // Ignore updatedAt (as it's auto-generated)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "user", ignore = true) // Ignore the user field during mapping
-    @Mapping(target = "forumThread", ignore = true) // Ignore forumThread (as it should not be updated here)
+    @Mapping(target = "thread", ignore = true) // Ignore thread (as it should not be updated here)
     void updateCommentFromDto(CommentDto commentDto, @MappingTarget Comment comment);
 
     Comment commentDtoToComment(CommentDto commentDto);
@@ -48,7 +48,7 @@ public interface CommentMapper {
 
     private CommentStatus status = CommentStatus.ACTIVE; // Default status
 
-    private ForumThread forumThread; // Use the class name ForumThread instead of thread
+    private ForumThread thread; // Use the class name ForumThread instead of thread
 
     private User user;
 

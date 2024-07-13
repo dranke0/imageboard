@@ -1,7 +1,7 @@
 package com.example.imageboard.forum;
 
 import com.example.imageboard.forum.dto.ForumDto;
-import com.example.imageboard.forumThread.ForumThread;
+import com.example.imageboard.thread.ForumThread;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

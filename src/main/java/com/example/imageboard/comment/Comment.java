@@ -1,7 +1,7 @@
 package com.example.imageboard.comment;
 
 import com.example.imageboard.user.User;
-import com.example.imageboard.forumThread.ForumThread;
+import com.example.imageboard.thread.ForumThread;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
