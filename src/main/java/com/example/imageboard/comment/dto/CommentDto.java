@@ -1,24 +1,41 @@
 package com.example.imageboard.comment.dto;
 
-import com.example.imageboard.user.User;
-import com.example.imageboard.user.dto.PublicUserDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-@Data
-@AllArgsConstructor
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)  // Exclude null fields from JSON serialization
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
-    private Long id;
     private String content;
     private String imageUrl;
-    private User user;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+    public CommentDto() {
+    }
+
+    public CommentDto(String content, String imageUrl) {
+        this.content = content;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "CommentDto{" +
+                "content='" + content + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                '}';
+    }
 }

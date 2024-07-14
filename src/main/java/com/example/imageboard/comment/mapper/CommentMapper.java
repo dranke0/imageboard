@@ -1,60 +1,22 @@
 package com.example.imageboard.comment.mapper;
 
 import com.example.imageboard.comment.Comment;
+
 import com.example.imageboard.comment.dto.CommentDto;
-import com.example.imageboard.user.User;
-import com.example.imageboard.user.dto.PublicUserDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface CommentMapper {
-    @Mapping(target = "user", source = "user")
-    CommentDto commentToCommentDto(Comment comment);
+public class CommentMapper {
+    public Comment toEntity(CommentDto commentDto) {
+        Comment comment = new Comment();
+        comment.setContent(commentDto.getContent());
+        comment.setImageUrl(commentDto.getImageUrl());
+        return comment;
+    }
 
-    List<CommentDto> commentsToCommentDtos(List<Comment> comments);
-
-    PublicUserDto userToPublicUserDto(User user);
-
-    // Modified method for mapping DTO to Comment
-    @Mapping(target = "id", ignore = true)         // Ignore the ID as it should not be mapped
-    @Mapping(target = "createdAt", ignore = true) // Ignore createdAt (as it's auto-generated)
-    @Mapping(target = "updatedAt", ignore = true) // Ignore updatedAt (as it's auto-generated)
-    @Mapping(target = "status", ignore = true)
-    @Mapping(target = "user", ignore = true) // Ignore the user field during mapping
-    @Mapping(target = "thread", ignore = true) // Ignore thread (as it should not be updated here)
-    void updateCommentFromDto(CommentDto commentDto, @MappingTarget Comment comment);
-
-    Comment commentDtoToComment(CommentDto commentDto);
+    public CommentDto toDto(Comment comment) {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setContent(comment.getContent());
+        commentDto.setImageUrl(comment.getImageUrl());
+        return commentDto;
+    }
 }
-
-/*
-    private Long id;
-    private String content;
-    private String imageUrl;
-    private User user;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-}*/
-
-/*
-    private Long id;
-
-    private String content;
-
-    private String imageUrl;
-
-    private CommentStatus status = CommentStatus.ACTIVE; // Default status
-
-    private ForumThread thread; // Use the class name ForumThread instead of thread
-
-    private User user;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;*/
-
-
 
