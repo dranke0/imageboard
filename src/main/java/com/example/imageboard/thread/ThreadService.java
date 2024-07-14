@@ -19,21 +19,20 @@ public class ThreadService {
     }
 
     public Optional<ThreadDto> get(Long id) {
-        return threadRepository.findById(id)
+        return Optional.ofNullable(threadRepository.findById(id)
                 .map(threadMapper::toDto)
-                .orElseThrow(() -> new ThreadNotFoundException(id));
+                .orElseThrow(() -> new ThreadNotFoundException(id)));
     }
 
     public void create(ThreadDto threadDto) {
-        ForumThread thread = threadMapper.toEntity(threadDto)
-                .orElseThrow(() -> new RuntimeException("Could not map thread"));
+        ForumThread thread = threadMapper.toEntity(threadDto);
         threadRepository.save(thread);
     }
 
     public void update(Long id, ThreadDto threadDto) {
         threadRepository.findById(id)
                 .orElseThrow(() -> new ThreadNotFoundException(id));
-        Optional<ForumThread> thread = threadMapper.toEntity(threadDto);
+        Optional<ForumThread> thread = Optional.ofNullable(threadMapper.toEntity(threadDto));
         threadRepository.save(thread
                 .orElseThrow(NullPointerException::new));
     }

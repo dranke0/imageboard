@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThreadDto {
     private String title;
+    private Long forumId;
     private String name;
     private String content;
     private String url;
@@ -13,8 +14,9 @@ public class ThreadDto {
     public ThreadDto() {
     }
 
-    public ThreadDto(String title, String name, String content, String url) {
+    public ThreadDto(String title, Long forumId, String name, String content, String url) {
         this.title = title;
+        this.forumId = forumId;
         this.name = name;
         this.content = content;
         this.url = url;
@@ -26,6 +28,14 @@ public class ThreadDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getForumId() {
+        return forumId;
+    }
+
+    public void setForumId(Long forumId) {
+        this.forumId = forumId;
     }
 
     public String getName() {
@@ -57,6 +67,7 @@ public class ThreadDto {
     public String toString() {
         return "ThreadDto{" +
                 ", title='" + title + '\'' +
+                ", forumId='" + forumId + '\'' +
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
