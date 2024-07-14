@@ -19,26 +19,26 @@ public class ThreadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ThreadDto> getById(@PathVariable Long id) {
-       threadService.findById(id);
+    public ResponseEntity<ThreadDto> get(@PathVariable Long id) {
+       threadService.get(id);
        return ResponseEntity.ok().build();
     }
 
 
     @PostMapping
-    public ResponseEntity<ThreadDto> create(@Valid @RequestBody ThreadDto threadDto){
+    public ResponseEntity<ThreadDto> create(@RequestBody ThreadDto threadDto){
         threadService.create(threadDto);
         return ResponseEntity.created(URI.create("/api/threads/")).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @Valid @RequestBody ThreadDto threadDto){
+    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto){
         threadService.update(id, threadDto);
             return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) throws ResponseStatusException{
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
             threadService.delete(id);
             return ResponseEntity.ok().build();
     }

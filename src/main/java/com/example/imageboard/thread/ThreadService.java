@@ -18,7 +18,7 @@ public class ThreadService {
         this.threadMapper = threadMapper;
     }
 
-    public Optional<ThreadDto> findById(Long id) {
+    public Optional<ThreadDto> get(Long id) {
         return threadRepository.findById(id)
                 .map(threadMapper::toDto)
                 .orElseThrow(() -> new ThreadNotFoundException(id));

@@ -1,32 +1,48 @@
-package com.example.imageboard.forum; // Adjust the package if needed
+package com.example.imageboard.forum;
 
-import com.example.imageboard.forum.validator.ForumValidator;
-import com.example.imageboard.thread.ForumThread;
-import com.example.imageboard.thread.dto.ThreadDto;
-import com.example.imageboard.thread.mapper.ThreadMapper;
-import lombok.RequiredArgsConstructor;
+import com.example.imageboard.forum.dto.ForumDto;
+import com.example.imageboard.forum.exception.ForumNotFoundException;
+import com.example.imageboard.forum.mapper.ForumMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
+
 
 @Service
-@Transactional // Use @Transactional for all methods that modify data
+@Transactional
 public class ForumService {
     private final ForumRepository forumRepository;
-    private final ThreadMapper threadMapper;
-    private final ForumValidator forumValidator;
+    private final ForumMapper forumMapper;
 
-    public ForumService(ForumRepository forumRepository, ThreadMapper threadMapper, ForumValidator forumValidator) {
+    public ForumService(ForumRepository forumRepository, ForumMapper forumMapper) {
         this.forumRepository = forumRepository;
-        this.threadMapper = threadMapper;
-        this.forumValidator = forumValidator;
+        this.forumMapper = forumMapper;
     }
 
-    public List<ThreadDto> getAll() {
-        List<ForumThread> forumThread = forumRepository.findAll();
-        threadMapper.toDto()
+    public ForumDto get(Long id) {
+        return forumRepository.findForumById(id)
+                .map(forumMapper::toDto)
+                .orElseThrow(() -> new ForumNotFoundException(id));
+    }
 
+    public void create(ForumDto forumDto) {
+        Optional.of(new Forum(forumDto.getName(), forumDto.getDescription()))
+                .map(forumRepository::save)
+                .map(forumMapper::toDto)
+                .orElseThrow(() -> new RuntimeException("Failed to create forum"));
+    }
+
+    public void update(Long id, ForumDto forumDto) {
+        forumRepository.findForumById(id)
+                .orElseThrow(() -> new ForumNotFoundException(id));
+                forumRepository.save(forumMapper.toEntity(forumDto));
+    }
+
+    public void delete(Long id) {
+        Forum forum = forumRepository.findForumById(id)
+                .orElseThrow(() -> new ForumNotFoundException(id));
+        forumRepository.delete(forum);
     }
 }
 

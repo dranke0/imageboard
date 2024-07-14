@@ -20,14 +20,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional // Added for managing transactions
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final CommentDtoValidator commentDtoValidator;
-    private final UserRepository userRepository;
     private final ThreadRepository threadRepository;
 
     public List<CommentDto> getAllComments() {

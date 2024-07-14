@@ -2,25 +2,22 @@ package com.example.imageboard.forum.mapper;
 
 import com.example.imageboard.forum.Forum;
 import com.example.imageboard.forum.dto.ForumDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
-import java.util.List;
+public class ForumMapper {
 
-@Mapper(componentModel = "spring")
-public interface ForumMapper {
+    public ForumDto toDto(Forum forum) {
+        ForumDto forumDto = new ForumDto();
+        forumDto.setName(forum.getName());
+        forumDto.setDescription(forum.getDescription());
+        return forumDto;
+    }
 
-    Forum forumToForumDto(Forum forum);
-
-    List<ForumDto> forumsToForumDtos(List<Forum> forums);
-
-    // Removed unnecessary mappings from forumDtoToForum
-    Forum forumDtoToForum(ForumDto forumDto);
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    void updateForumFromDto(ForumDto forumDto, @MappingTarget Forum forum); // Removed unnecessary mappings
+    public Forum toEntity(ForumDto forumDto){
+        Forum forum = new Forum();
+        forum.setName(forumDto.getName());
+        forum.setDescription(forumDto.getDescription());
+        return forum;
+    }
 }
 
 

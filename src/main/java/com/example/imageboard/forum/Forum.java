@@ -37,10 +37,9 @@ public class Forum {
     public Forum() {
     }
 
-    public Forum(String name, String description, List<ForumThread> forumThreads) {
+    public Forum(String name, String description) {
         this.name = name;
         this.description = description;
-        this.forumThreads = forumThreads;
     }
 
     public Long getId() {
