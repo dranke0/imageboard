@@ -1,6 +1,7 @@
 package com.example.imageboard.thread;
 
 import com.example.imageboard.comment.Comment;
+import com.example.imageboard.forum.Forum;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,15 +22,16 @@ public class ForumThread {
     @Column(nullable = false)
     private String title;
 
-    @Column(name = "forum_id")
-    private Long forumId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "forum_id", referencedColumnName = "id")
+    private Forum forum;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255) default 'Anonymous'") // Set default value to "Anonymous
     private String name = "Anonymous";
 
     private String password;
 
-    @OneToMany(mappedBy = "forumThread", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)
@@ -47,9 +49,9 @@ public class ForumThread {
     public ForumThread() {
     }
 
-    public ForumThread(String title, Long forumId, String name, String password, List<Comment> comments, String content, String url) {
+    public ForumThread(String title, Forum forum, String name, String password, List<Comment> comments, String content, String url) {
         this.title = title;
-        this.forumId = forumId;
+        this.forum = forum;
         this.name = name;
         this.password = password;
         this.comments = comments;
@@ -74,12 +76,12 @@ public class ForumThread {
     }
 
 
-    public Long getForumId() {
-        return forumId;
+    public Forum getForum() {
+        return forum;
     }
 
-    public void setForumId(Long forumId) {
-        this.forumId = forumId;
+    public void setForum(Forum forum) {
+        this.forum = forum;
     }
 
     public String getName() {
@@ -143,12 +145,12 @@ public class ForumThread {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ForumThread that = (ForumThread) o;
-        return Objects.equals(id, that.id) && Objects.equals(forumId, that.forumId);
+        return Objects.equals(id, that.id) && Objects.equals(forum.getId(), that.forum.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, forumId);
+        return Objects.hash(id, forum.getId());
     }
 
     @Override
@@ -156,7 +158,7 @@ public class ForumThread {
         return "ForumThread{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", forumId=" + forumId +
+                ", forum=" + forum +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", comments=" + comments +

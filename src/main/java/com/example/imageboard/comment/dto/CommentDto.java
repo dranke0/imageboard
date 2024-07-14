@@ -1,20 +1,22 @@
 package com.example.imageboard.comment.dto;
 
+import com.example.imageboard.forum.Forum;
+import com.example.imageboard.thread.ForumThread;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
     private String content;
     private String imageUrl;
-    private Long forumThreadId;
+    private ForumThread thread;
 
     public CommentDto() {
     }
 
-    public CommentDto(String content, String imageUrl, Long forumThreadId) {
+    public CommentDto(String content, String imageUrl, ForumThread thread) {
         this.content = content;
         this.imageUrl = imageUrl;
-        this.forumThreadId = forumThreadId;
+        this.thread = thread;
     }
 
     public String getContent() {
@@ -33,12 +35,12 @@ public class CommentDto {
         this.imageUrl = imageUrl;
     }
 
-    public Long getForumThreadId() {
-        return forumThreadId;
+    public ForumThread getThread() {
+        return thread;
     }
 
-    public void setForumThreadId(Long forumThreadId) {
-        this.forumThreadId = forumThreadId;
+    public void setThread(ForumThread thread) {
+        this.thread = thread;
     }
 
     @Override
@@ -46,7 +48,8 @@ public class CommentDto {
         return "CommentDto{" +
                 "content='" + content + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", forumThreadId=" + forumThreadId +
+                ", thread=" + thread +
                 '}';
     }
+
 }

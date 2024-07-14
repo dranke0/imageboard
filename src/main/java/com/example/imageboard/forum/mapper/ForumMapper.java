@@ -2,7 +2,9 @@ package com.example.imageboard.forum.mapper;
 
 import com.example.imageboard.forum.Forum;
 import com.example.imageboard.forum.dto.ForumDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ForumMapper {
 
     public ForumDto toDto(Forum forum) {

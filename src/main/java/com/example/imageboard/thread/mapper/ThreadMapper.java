@@ -12,7 +12,7 @@ public class ThreadMapper {
     public ThreadDto toDto(ForumThread forumThread) {
         return new ThreadDto(
                 forumThread.getTitle(),
-                forumThread.getForumId(),
+                forumThread.getForum(),
                 forumThread.getName(),
                 forumThread.getContent(),
                 forumThread.getUrl()
@@ -22,7 +22,7 @@ public class ThreadMapper {
     public ForumThread toEntity(ThreadDto threadDto) {
     return new ForumThread(
             threadDto.getTitle(),
-            threadDto.getForumId(),
+            threadDto.getForum(),
             threadDto.getName(),
             null,
             new ArrayList<>(),

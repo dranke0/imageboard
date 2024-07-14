@@ -1,5 +1,7 @@
 package com.example.imageboard.comment;
 
+import com.example.imageboard.forum.Forum;
+import com.example.imageboard.thread.ForumThread;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -19,8 +21,9 @@ public class Comment {
 
     private String imageUrl;
 
-    @Column(name = "thread_id", nullable = false)
-    private Long forumThreadId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thread_id", referencedColumnName = "id")
+    private ForumThread thread;
 
     private String name;
 
@@ -33,10 +36,10 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String content, String imageUrl, Long forumThreadId) {
+    public Comment(String content, String imageUrl, ForumThread thread) {
         this.content = content;
         this.imageUrl = imageUrl;
-        this.forumThreadId = forumThreadId;
+        this.thread = thread;
     }
 
     public Long getId() {
@@ -63,12 +66,12 @@ public class Comment {
         this.imageUrl = imageUrl;
     }
 
-    public Long getForumThreadId() {
-        return forumThreadId;
+    public ForumThread getThread() {
+        return thread;
     }
 
-    public void setForumThreadId(Long forumThreadId) {
-        this.forumThreadId = forumThreadId;
+    public void setForumThreadId(ForumThread thread) {
+        this.thread = thread;
     }
 
     public String getName() {
@@ -113,7 +116,7 @@ public class Comment {
                 "id=" + id +
                 ", content='" + content + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", forumThreadId=" + forumThreadId +
+                ", thread=" + thread +
                 ", name='" + name + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +

@@ -1,12 +1,13 @@
 package com.example.imageboard.thread.dto;
 
+import com.example.imageboard.forum.Forum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThreadDto {
     private String title;
-    private Long forumId;
+    private Forum forum;
     private String name;
     private String content;
     private String url;
@@ -14,9 +15,9 @@ public class ThreadDto {
     public ThreadDto() {
     }
 
-    public ThreadDto(String title, Long forumId, String name, String content, String url) {
+    public ThreadDto(String title, Forum forum, String name, String content, String url) {
         this.title = title;
-        this.forumId = forumId;
+        this.forum = forum;
         this.name = name;
         this.content = content;
         this.url = url;
@@ -30,12 +31,12 @@ public class ThreadDto {
         this.title = title;
     }
 
-    public Long getForumId() {
-        return forumId;
+    public Forum getForum() {
+        return forum;
     }
 
-    public void setForumId(Long forumId) {
-        this.forumId = forumId;
+    public void setForumId(Forum forum) {
+        this.forum = forum;
     }
 
     public String getName() {
@@ -67,7 +68,7 @@ public class ThreadDto {
     public String toString() {
         return "ThreadDto{" +
                 ", title='" + title + '\'' +
-                ", forumId='" + forumId + '\'' +
+                ", forum='" + forum + '\'' +
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
