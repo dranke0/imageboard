@@ -26,13 +26,13 @@ public class ThreadController {
 
 
     @PostMapping
-    public ResponseEntity<ThreadDto> create(@RequestBody ThreadDto threadDto){
+    public ResponseEntity<Void> create(@RequestBody ThreadDto threadDto){
         threadService.create(threadDto);
         return ResponseEntity.created(URI.create("/api/threads/")).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto){
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ThreadDto threadDto){
         threadService.update(id, threadDto);
             return ResponseEntity.ok().build();
     }

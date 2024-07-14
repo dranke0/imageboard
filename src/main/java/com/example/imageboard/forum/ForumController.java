@@ -32,7 +32,7 @@ public class ForumController {
     @PostMapping
     public ResponseEntity<ForumDto> create(@RequestBody ForumDto forumDto){
         forumService.create(forumDto);
-        return ResponseEntity.created(URI.create("/api/threads/")).build();
+        return ResponseEntity.created(URI.create("/api/forums/")).build();
     }
 
     @PutMapping("/{id}")

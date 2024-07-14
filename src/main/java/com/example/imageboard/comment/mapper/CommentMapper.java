@@ -9,6 +9,7 @@ public class CommentMapper {
         Comment comment = new Comment();
         comment.setContent(commentDto.getContent());
         comment.setImageUrl(commentDto.getImageUrl());
+        comment.setForumThreadId(commentDto.getForumThreadId());
         return comment;
     }
 
@@ -16,6 +17,7 @@ public class CommentMapper {
         CommentDto commentDto = new CommentDto();
         commentDto.setContent(comment.getContent());
         commentDto.setImageUrl(comment.getImageUrl());
+        commentDto.setForumThreadId(comment.getForumThreadId());
         return commentDto;
     }
 }
