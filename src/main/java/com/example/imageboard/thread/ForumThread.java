@@ -91,10 +91,7 @@ public class ForumThread {
     }
 
     public void setName(String name) {
-        if (this.name != null)
-            this.name = name;
-        else
-            this.name = "Anonymous";
+        this.name = Objects.equals(name, "") ? "Anonymous" : name;
     }
 
     public List<Comment> getComments() {
