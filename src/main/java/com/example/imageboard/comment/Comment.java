@@ -1,6 +1,5 @@
 package com.example.imageboard.comment;
 
-import com.example.imageboard.forum.Forum;
 import com.example.imageboard.thread.ForumThread;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "comments") // Explicitly define the table name
+@Table(name = "comments")
 public class Comment {
 
     @Id
@@ -70,7 +69,7 @@ public class Comment {
         return thread;
     }
 
-    public void setForumThreadId(ForumThread thread) {
+    public void setThread(ForumThread thread) {
         this.thread = thread;
     }
 
@@ -79,23 +78,15 @@ public class Comment {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Objects.equals(name, "") ? "Anonymous" : name;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override

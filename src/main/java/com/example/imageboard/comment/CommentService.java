@@ -27,28 +27,26 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDto getById(Long id) {
+    public CommentDto get(Long id) {
         return commentRepository.findById(id)
                 .map(commentMapper::toDto)
                 .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
-    public void create(CommentDto commentDto) {
+    public CommentDto create(CommentDto commentDto) {
         Comment comment = commentMapper.toEntity(commentDto);
-        commentRepository.save(comment);
+        return commentMapper.toDto(commentRepository.save(comment));
     }
 
-    public void update(Long id, CommentDto updatedCommentDto) {
-        if (commentRepository.findById(id).isPresent())
-            commentRepository.save(commentMapper.toEntity(updatedCommentDto));
-        else
-            throw new CommentNotFoundException(id);
+    public CommentDto update(Long id, CommentDto updatedCommentDto) {
+        commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException(id));
+        Comment comment = commentMapper.toEntity(updatedCommentDto);
+            return commentMapper.toDto(commentRepository.save(comment));
     }
 
-    public void deleteComment(Long id) {
-        if (commentRepository.findById(id).isPresent())
-            commentRepository.deleteById(id);
-        else
-            throw new CommentNotFoundException(id);
+    public void delete(Long id) {
+        commentRepository.deleteById(id);
     }
 }
+

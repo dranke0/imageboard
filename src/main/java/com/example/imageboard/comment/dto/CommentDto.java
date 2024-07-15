@@ -1,22 +1,32 @@
 package com.example.imageboard.comment.dto;
 
-import com.example.imageboard.forum.Forum;
-import com.example.imageboard.thread.ForumThread;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
+    private Long id;
     private String content;
     private String imageUrl;
-    private ForumThread thread;
+    private Long threadId;
 
     public CommentDto() {
     }
 
-    public CommentDto(String content, String imageUrl, ForumThread thread) {
+    public CommentDto(Long id, String content, String imageUrl, Long threadId) {
+        this.id = id;
         this.content = content;
         this.imageUrl = imageUrl;
-        this.thread = thread;
+        this.threadId = threadId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -35,12 +45,24 @@ public class CommentDto {
         this.imageUrl = imageUrl;
     }
 
-    public ForumThread getThread() {
-        return thread;
+    public Long getThreadId() {
+        return threadId;
     }
 
-    public void setThread(ForumThread thread) {
-        this.thread = thread;
+    public void setThreadId(Long threadId) {
+        this.threadId = threadId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CommentDto that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(threadId, that.threadId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, threadId);
     }
 
     @Override
@@ -48,8 +70,7 @@ public class CommentDto {
         return "CommentDto{" +
                 "content='" + content + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", thread=" + thread +
+                ", threadId=" + threadId +
                 '}';
     }
-
 }

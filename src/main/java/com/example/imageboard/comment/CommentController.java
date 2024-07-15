@@ -1,13 +1,11 @@
 package com.example.imageboard.comment;
 
 import com.example.imageboard.comment.dto.CommentDto;
-import com.example.imageboard.comment.exception.CommentNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/comments/")
@@ -26,27 +24,27 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommentDto> getById(@PathVariable Long id) {
-        Optional<CommentDto> optionalCommentDto = Optional.ofNullable(commentService.getById(id));
-        return optionalCommentDto.map(ResponseEntity::ok)
-                .orElseThrow(() -> new CommentNotFoundException(id));
+    public ResponseEntity<CommentDto> get(@PathVariable Long id) {
+        CommentDto commentDto = commentService.get(id);
+        return ResponseEntity.ok(commentDto);
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody CommentDto commentDto, @RequestParam Long threadId) {
-        commentService.create(commentDto);
-        return ResponseEntity.created(URI.create("/api/comments/")).build();
+    public ResponseEntity<CommentDto> create(@RequestBody CommentDto commentDto) {
+        CommentDto createdComment = commentService.create(commentDto);
+        return ResponseEntity.created(URI.create("/api/comments/" + createdComment.getId()))
+                .body(createdComment);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentDto> update(@PathVariable Long id, @RequestBody CommentDto commentDto) {
         commentService.update(id, commentDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        commentService.deleteComment(id);
+        commentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
