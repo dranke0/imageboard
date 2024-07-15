@@ -4,6 +4,7 @@ import com.example.imageboard.forum.dto.ForumDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import java.util.List;
 
 
 @RestController
@@ -16,8 +17,15 @@ public class ForumController {
         this.forumService = forumService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<ForumDto>> getAll() {
+        List<ForumDto> forumDtos = forumService.getAll();
+        return ResponseEntity.ok(forumDtos);
+    }
+
+
     @GetMapping("/{id}")
-    public ResponseEntity<ForumDto> getById(@PathVariable Long id) {
+    public ResponseEntity<ForumDto> get(@PathVariable Long id) {
         return ResponseEntity.ok(forumService.get(id));
     }
 

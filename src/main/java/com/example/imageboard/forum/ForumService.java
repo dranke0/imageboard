@@ -6,6 +6,8 @@ import com.example.imageboard.forum.mapper.ForumMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ForumService {
@@ -16,6 +18,14 @@ public class ForumService {
         this.forumRepository = forumRepository;
         this.forumMapper = forumMapper;
     }
+
+    public List<ForumDto> getAll() {
+        List<Forum> forums = forumRepository.findAll();
+        return forums.stream()
+                .map(forumMapper::toDto)
+                .toList();
+    }
+
 
     public ForumDto get(Long id) {
         return forumRepository.findById(id)
