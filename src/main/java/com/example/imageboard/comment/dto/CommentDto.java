@@ -68,6 +68,7 @@ public class CommentDto {
     @Override
     public String toString() {
         return "CommentDto{" +
+                "id=" + id +
                 "content='" + content + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", threadId=" + threadId +
