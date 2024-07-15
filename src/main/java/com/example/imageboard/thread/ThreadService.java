@@ -48,15 +48,13 @@ public class ThreadService {
     public ThreadDto update(Long id, ThreadDto threadDto, String password) {
         ForumThread existingThread = threadRepository.findById(id)
                 .orElseThrow(() -> new ThreadNotFoundException(id));
-        if (existingThread.getPassword() != null && !passwordEncoder.matches(password, existingThread.getPassword())) {
-            throw new InvalidThreadCredentialsException();
-        }
-        existingThread.setTitle(threadDto.getTitle());
-        existingThread.setContent(threadDto.getContent());
-        existingThread.setUrl(threadDto.getUrl());
-        if (threadDto.getPassword() != null && !threadDto.getPassword().isEmpty()) {
-            existingThread.setPassword(passwordEncoder.encode(threadDto.getPassword()));
-        }
+        if (existingThread.getPassword() != null && passwordEncoder.matches(password, existingThread.getPassword())) {
+
+            existingThread.setTitle(threadDto.getTitle());
+            existingThread.setContent(threadDto.getContent());
+            existingThread.setUrl(threadDto.getUrl());
+        } else throw new InvalidThreadCredentialsException();
+
         return threadMapper.toDto(threadRepository.save(existingThread));
     }
 
