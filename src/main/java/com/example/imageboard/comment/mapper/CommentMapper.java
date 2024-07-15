@@ -39,6 +39,7 @@ public class CommentMapper {
                 .orElseThrow(() -> new ThreadNotFoundException(commentDto.getThreadId()));
 
         Comment comment = new Comment();
+        comment.setId(commentDto.getId());
         comment.setContent(commentDto.getContent());
         comment.setImageUrl(commentDto.getImageUrl());
         comment.setThread(thread);
