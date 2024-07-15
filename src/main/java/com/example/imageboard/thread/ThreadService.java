@@ -48,23 +48,28 @@ public class ThreadService {
     public ThreadDto update(Long id, ThreadDto threadDto, String password) {
         return threadRepository.findById(id)
                 .map(existingThread -> {
-                    if (existingThread.getPassword() != null) {
+                    // Check if the existing thread has a password AND if a new password was provided
+                    if (existingThread.getPassword() != null && password != null) {
                         if (!passwordEncoder.matches(password, existingThread.getPassword())) {
                             throw new InvalidThreadCredentialsException();
                         }
                     }
+
+                    // Update the thread
                     existingThread.setTitle(threadDto.getTitle());
                     existingThread.setContent(threadDto.getContent());
                     existingThread.setUrl(threadDto.getUrl());
 
-                    // Update password if provided in the dto
+                    // Update password only if provided in the dto AND not empty
                     if (threadDto.getPassword() != null && !threadDto.getPassword().isEmpty()) {
                         existingThread.setPassword(passwordEncoder.encode(threadDto.getPassword()));
                     }
+
                     return threadMapper.toDto(threadRepository.save(existingThread));
                 })
                 .orElseThrow(() -> new ThreadNotFoundException(id));
     }
+
 
     public void delete(Long id, String password) {
         threadRepository.findById(id)
