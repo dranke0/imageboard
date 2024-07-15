@@ -8,6 +8,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/forums/")
 public class ForumController {
 

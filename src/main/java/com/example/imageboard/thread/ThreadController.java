@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/threads/")
 public class ThreadController {
 
