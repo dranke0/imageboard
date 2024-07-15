@@ -6,9 +6,6 @@ import com.example.imageboard.forum.mapper.ForumMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-
 @Service
 @Transactional
 public class ForumService {
@@ -26,23 +23,24 @@ public class ForumService {
                 .orElseThrow(() -> new ForumNotFoundException(id));
     }
 
-    public void create(ForumDto forumDto) {
-        Optional.of(new Forum(forumDto.getName(), forumDto.getDescription()))
-                .map(forumRepository::save)
-                .map(forumMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("Failed to create forum"));
+    public ForumDto create(ForumDto forumDto) {
+        Forum forum = forumMapper.toEntity(forumDto);
+        Forum savedForum = forumRepository.save(forum);
+        return forumMapper.toDto(savedForum);
     }
 
-    public void update(Long id, ForumDto forumDto) {
-        forumRepository.findById(id)
+    public ForumDto update(Long id, ForumDto forumDto) {
+        return forumRepository.findById(id)
+                .map(existingForum -> {
+                    existingForum.setName(forumDto.getName());
+                    existingForum.setDescription(forumDto.getDescription());
+                    return forumMapper.toDto(forumRepository.save(existingForum));
+                })
                 .orElseThrow(() -> new ForumNotFoundException(id));
-                forumRepository.save(forumMapper.toEntity(forumDto));
     }
 
     public void delete(Long id) {
-        Forum forum = forumRepository.findById(id)
-                .orElseThrow(() -> new ForumNotFoundException(id));
-        forumRepository.delete(forum);
+        forumRepository.deleteById(id);
     }
 }
 

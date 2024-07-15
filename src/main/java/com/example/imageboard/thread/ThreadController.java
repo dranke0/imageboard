@@ -1,15 +1,13 @@
 package com.example.imageboard.thread;
 
 import com.example.imageboard.thread.dto.ThreadDto;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/threads")
+@RequestMapping("/api/threads/")
 public class ThreadController {
 
     private final ThreadService threadService;

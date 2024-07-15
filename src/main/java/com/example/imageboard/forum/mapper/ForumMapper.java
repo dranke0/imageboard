@@ -9,6 +9,7 @@ public class ForumMapper {
 
     public ForumDto toDto(Forum forum) {
         ForumDto forumDto = new ForumDto();
+        forumDto.setId(forum.getId());
         forumDto.setName(forum.getName());
         forumDto.setDescription(forum.getDescription());
         return forumDto;
