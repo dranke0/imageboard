@@ -21,7 +21,7 @@ public class ForumService {
     }
 
     public ForumDto get(Long id) {
-        return forumRepository.findForumById(id)
+        return forumRepository.findById(id)
                 .map(forumMapper::toDto)
                 .orElseThrow(() -> new ForumNotFoundException(id));
     }
@@ -34,13 +34,13 @@ public class ForumService {
     }
 
     public void update(Long id, ForumDto forumDto) {
-        forumRepository.findForumById(id)
+        forumRepository.findById(id)
                 .orElseThrow(() -> new ForumNotFoundException(id));
                 forumRepository.save(forumMapper.toEntity(forumDto));
     }
 
     public void delete(Long id) {
-        Forum forum = forumRepository.findForumById(id)
+        Forum forum = forumRepository.findById(id)
                 .orElseThrow(() -> new ForumNotFoundException(id));
         forumRepository.delete(forum);
     }
