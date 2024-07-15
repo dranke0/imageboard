@@ -23,6 +23,7 @@ public class CommentMapper {
         }
 
         CommentDto commentDto = new CommentDto();
+        commentDto.setId(comment.getId());
         commentDto.setContent(comment.getContent());
         commentDto.setImageUrl(comment.getImageUrl());
         commentDto.setThreadId(comment.getThread().getId());
