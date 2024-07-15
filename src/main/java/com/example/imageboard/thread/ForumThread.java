@@ -91,9 +91,10 @@ public class ForumThread {
     }
 
     public void setName(String name) {
-        if (this.name.isEmpty())
+        if (this.name != null)
+            this.name = name;
+        else
             this.name = "Anonymous";
-        else this.name = name;
     }
 
     public List<Comment> getComments() {
@@ -101,7 +102,7 @@ public class ForumThread {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comments = comments;
+        this.comments = comments != null ? new ArrayList<>(comments) : new ArrayList<>();
     }
 
     public String getContent() {
