@@ -1,10 +1,12 @@
 package com.example.imageboard.thread.exception;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class ThreadNotFoundException extends EntityNotFoundException {
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Thread not found") // 404 Not Found
+public class ThreadNotFoundException extends RuntimeException {
 
     public ThreadNotFoundException(Long id) {
-        super("Forum thread not found with id: " + id);
+        super("Thread not found with ID: " + id);
     }
 }

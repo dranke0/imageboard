@@ -1,12 +1,16 @@
 package com.example.imageboard.thread;
 
 import com.example.imageboard.thread.dto.ThreadDto;
+import com.example.imageboard.thread.exception.InvalidThreadCredentialsException;
 import com.example.imageboard.thread.exception.ThreadNotFoundException;
 import com.example.imageboard.thread.mapper.ThreadMapper;
-import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -14,17 +18,19 @@ public class ThreadService {
 
     private final ThreadRepository threadRepository;
     private final ThreadMapper threadMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public ThreadService(ThreadRepository threadRepository, ThreadMapper threadMapper) {
+    public ThreadService(ThreadRepository threadRepository, ThreadMapper threadMapper, PasswordEncoder passwordEncoder) {
         this.threadRepository = threadRepository;
         this.threadMapper = threadMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<ThreadDto> getAll() {
-        List<ForumThread> threads = threadRepository.findAll();
-        return threads.stream()
+        return threadRepository.findAll()
+                .stream()
                 .map(threadMapper::toDto)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public ThreadDto get(Long id) {
@@ -34,24 +40,42 @@ public class ThreadService {
     }
 
     public ThreadDto create(ThreadDto threadDto) {
+        threadDto.setPassword(passwordEncoder.encode(threadDto.getPassword()));
         ForumThread thread = threadMapper.toEntity(threadDto);
         return threadMapper.toDto(threadRepository.save(thread));
     }
 
-    public ThreadDto update(Long id, ThreadDto threadDto) {
+    public ThreadDto update(Long id, ThreadDto threadDto, String password) {
         return threadRepository.findById(id)
+                .filter(existingThread -> passwordEncoder.matches(password, existingThread.getPassword()))
                 .map(existingThread -> {
                     existingThread.setTitle(threadDto.getTitle());
                     existingThread.setContent(threadDto.getContent());
                     existingThread.setUrl(threadDto.getUrl());
+
+                    if (threadDto.getPassword() != null && !threadDto.getPassword().isEmpty()) {
+                        existingThread.setPassword(passwordEncoder.encode(threadDto.getPassword()));
+                    }
+
                     return threadMapper.toDto(threadRepository.save(existingThread));
                 })
                 .orElseThrow(() -> new ThreadNotFoundException(id));
     }
-    public void delete(Long id) {
-        threadRepository.deleteById(id);
+
+    public void delete(Long id, String password) {
+        threadRepository.findById(id)
+                .ifPresentOrElse(thread -> {
+                    if (password == null || thread.getPassword() == null || passwordEncoder.matches(password, thread.getPassword())) {
+                        threadRepository.delete(thread);
+                    } else {
+                        throw new InvalidThreadCredentialsException();
+                    }
+                }, () -> {
+                    throw new ThreadNotFoundException(id);
+                });
     }
 }
+
 
 
 

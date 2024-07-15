@@ -23,6 +23,7 @@ public class ThreadMapper {
         return new ThreadDto(
                 thread.getId(),
                 thread.getTitle(),
+                thread.getPassword(),
                 thread.getForum().getId(),
                 thread.getName(),
                 thread.getContent(),
@@ -41,6 +42,7 @@ public class ThreadMapper {
         ForumThread thread = new ForumThread();
         thread.setId(threadDto.getId());
         thread.setTitle(threadDto.getTitle());
+        thread.setPassword(threadDto.getPassword());
         thread.setForum(forum);
         thread.setName(threadDto.getName());
         thread.setContent(threadDto.getContent());
