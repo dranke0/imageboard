@@ -9,7 +9,6 @@ import java.util.Objects;
 public class ThreadDto {
     private Long id;
     private String title;
-    private String password;
     private Long forumId;
     private String name;
     private String content;
@@ -18,10 +17,9 @@ public class ThreadDto {
     public ThreadDto() {
     }
 
-    public ThreadDto(Long id, String title, String password, Long forumId, String name, String content, String url) {
+    public ThreadDto(Long id, String title, Long forumId, String name, String content, String url) {
         this.id = id;
         this.title = title;
-        this.password = password;
         this.forumId = forumId;
         this.name = name;
         this.content = content;
@@ -42,14 +40,6 @@ public class ThreadDto {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Long getForumId() {
@@ -100,7 +90,6 @@ public class ThreadDto {
     public String toString() {
         return "ThreadDto{" +
                 ", title='" + title + '\'' +
-                ", password='" + password + '\'' +
                 ", forumId='" + forumId + '\'' +
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +

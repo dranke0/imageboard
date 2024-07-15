@@ -38,14 +38,14 @@ public class ThreadController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto, @RequestParam(required = false) String password) {
-        ThreadDto updatedThread = threadService.update(id, threadDto, password);
+    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto){
+        ThreadDto updatedThread = threadService.update(id, threadDto);
         return ResponseEntity.ok(updatedThread);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestParam(required = false) String password) {
-        threadService.delete(id, password);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        threadService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

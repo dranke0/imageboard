@@ -7,5 +7,4 @@ import java.util.Optional;
 
 @Repository
 public interface ThreadRepository extends JpaRepository<ForumThread, Long> {
-    Optional<ForumThread> findById(Long id);
 }
