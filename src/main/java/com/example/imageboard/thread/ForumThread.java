@@ -91,7 +91,9 @@ public class ForumThread {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (this.name.isEmpty())
+            this.name = "Anonymous";
+        else this.name = name;
     }
 
     public List<Comment> getComments() {
@@ -122,16 +124,8 @@ public class ForumThread {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override
