@@ -7,8 +7,6 @@ import com.example.imageboard.thread.ForumThread;
 import com.example.imageboard.thread.dto.ThreadDto;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-
 @Component
 public class ThreadMapper {
 
@@ -28,7 +26,8 @@ public class ThreadMapper {
                 thread.getForum().getId(),
                 thread.getName(),
                 thread.getContent(),
-                thread.getUrl()
+                thread.getUrl(),
+                thread.getPassword()
         );
     }
 
