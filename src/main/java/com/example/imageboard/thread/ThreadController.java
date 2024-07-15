@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -17,6 +18,11 @@ public class ThreadController {
         this.threadService = threadService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<ThreadDto>> getAll() {
+        List<ThreadDto> threads = threadService.getAll();
+        return ResponseEntity.ok(threads);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ThreadDto> get(@PathVariable Long id) {
       ThreadDto threadDto = threadService.get(id);
@@ -32,14 +38,14 @@ public class ThreadController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto, @RequestParam String password){
-        ThreadDto updatedThread = threadService.update(id, threadDto, password);
+    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto){
+        ThreadDto updatedThread = threadService.update(id, threadDto);
             return ResponseEntity.ok(updatedThread);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestParam String password) {
-            threadService.delete(id, password);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+            threadService.delete(id);
             return ResponseEntity.noContent().build();
     }
 }

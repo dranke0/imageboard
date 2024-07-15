@@ -13,19 +13,17 @@ public class ThreadDto {
     private String name;
     private String content;
     private String url;
-    private String password;
 
     public ThreadDto() {
     }
 
-    public ThreadDto(Long id, String title, Long forumId, String name, String content, String url, String password) {
+    public ThreadDto(Long id, String title, Long forumId, String name, String content, String url) {
         this.id = id;
         this.title = title;
         this.forumId = forumId;
         this.name = name;
         this.content = content;
         this.url = url;
-        this.password = password;
     }
 
     public Long getId() {
@@ -76,14 +74,6 @@ public class ThreadDto {
         this.url = url;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,7 +94,6 @@ public class ThreadDto {
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

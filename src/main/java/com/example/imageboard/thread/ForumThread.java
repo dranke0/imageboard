@@ -29,8 +29,6 @@ public class ForumThread {
     @Column(nullable = false, columnDefinition = "VARCHAR(255) default 'Anonymous'")
     private String name = "Anonymous";
 
-    private String password;
-
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -49,11 +47,10 @@ public class ForumThread {
     public ForumThread() {
     }
 
-    public ForumThread(String title, Forum forum, String name, String password, List<Comment> comments, String content, String url) {
+    public ForumThread(String title, Forum forum, String name, List<Comment> comments, String content, String url) {
         this.title = title;
         this.forum = forum;
         this.name = name;
-        this.password = password;
         this.comments = comments;
         this.content = content;
         this.url = url;
@@ -81,7 +78,14 @@ public class ForumThread {
     }
 
     public void setForum(Forum forum) {
+
+        if (this.forum != null) {
+            this.forum.getThreads().remove(this);
+        }
         this.forum = forum;
+        if (forum != null) {
+            forum.getThreads().add(this);
+        }
     }
 
     public String getName() {
@@ -90,14 +94,6 @@ public class ForumThread {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<Comment> getComments() {
@@ -160,7 +156,6 @@ public class ForumThread {
                 ", title='" + title + '\'' +
                 ", forum=" + forum +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 ", comments=" + comments +
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +

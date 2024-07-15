@@ -26,8 +26,7 @@ public class ThreadMapper {
                 thread.getForum().getId(),
                 thread.getName(),
                 thread.getContent(),
-                thread.getUrl(),
-                thread.getPassword()
+                thread.getUrl()
         );
     }
 
@@ -36,7 +35,6 @@ public class ThreadMapper {
             return null;
         }
 
-        // Fetch Forum entity
         Forum forum = forumRepository.findById(threadDto.getForumId())
                 .orElseThrow(() -> new ForumNotFoundException(threadDto.getForumId()));
 
@@ -48,7 +46,6 @@ public class ThreadMapper {
         thread.setContent(threadDto.getContent());
         thread.setUrl(threadDto.getUrl());
         forum.getThreads().add(thread);
-        thread.setPassword(threadDto.getPassword());
         return thread;
     }
 }
