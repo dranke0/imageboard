@@ -1,6 +1,7 @@
 package com.example.imageboard.forum;
 
 import com.example.imageboard.thread.ForumThread;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,7 +27,8 @@ public class Forum {
     private String description;
 
     @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) // Optional FetchType.EAGER
-    private List<ForumThread> forumThreads = new ArrayList<>();
+    @JsonIgnore
+    private List<ForumThread> threads = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -66,12 +68,12 @@ public class Forum {
         this.description = description;
     }
 
-    public List<ForumThread> getForumThreads() {
-        return forumThreads;
+    public List<ForumThread> getThreads() {
+        return threads;
     }
 
-    public void setForumThreads(List<ForumThread> forumThreads) {
-        this.forumThreads = forumThreads;
+    public void setThreads(List<ForumThread> threads) {
+        this.threads = threads;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -109,7 +111,7 @@ public class Forum {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", forumThreads=" + forumThreads +
+                ", threads=" + threads +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

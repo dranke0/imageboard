@@ -26,7 +26,7 @@ public class ForumThread {
     @JoinColumn(name = "forum_id", referencedColumnName = "id")
     private Forum forum;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(255) default 'Anonymous'") // Set default value to "Anonymous
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) default 'Anonymous'")
     private String name = "Anonymous";
 
     private String password;
