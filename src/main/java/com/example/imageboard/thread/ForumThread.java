@@ -26,7 +26,6 @@ public class ForumThread {
     @JoinColumn(name = "forum_id", referencedColumnName = "id")
     private Forum forum;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(255) default 'Anonymous'")
     private String name;
 
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
