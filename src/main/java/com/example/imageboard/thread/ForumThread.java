@@ -27,7 +27,7 @@ public class ForumThread {
     private Forum forum;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255) default 'Anonymous'")
-    private String name = "Anonymous";
+    private String name;
 
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
