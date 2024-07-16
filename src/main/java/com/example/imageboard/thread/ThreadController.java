@@ -18,34 +18,41 @@ public class ThreadController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ThreadDto>> getAll() {
-        List<ThreadDto> threads = threadService.getAll();
+    public ResponseEntity<List<ThreadDto>> getAllThreads() {
+        List<ThreadDto> threads = threadService.getAllThreads();
         return ResponseEntity.ok(threads);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ThreadDto> getById(@PathVariable Long id) {
-        ThreadDto threadDto = threadService.getById(id);
+    public ResponseEntity<ThreadDto> getThreadById(@PathVariable Long id) {
+        ThreadDto threadDto = threadService.getThreadById(id);
         return ResponseEntity.ok(threadDto);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ThreadDto>> getAllThreadsByForumId(@RequestParam(required = false) Long forumId) {
+        List<ThreadDto> threads = forumId != null
+                ? threadService.getThreadsByForumId(forumId)
+                : threadService.getAllThreads();
+        return ResponseEntity.ok(threads);
+    }
 
     @PostMapping
-    public ResponseEntity<ThreadDto> create(@RequestBody ThreadDto threadDto) {
-        ThreadDto createdThread = threadService.create(threadDto);
+    public ResponseEntity<ThreadDto> createThread(@RequestBody ThreadDto threadDto) {
+        ThreadDto createdThread = threadService.createThread(threadDto);
         return ResponseEntity.created(URI.create("/api/threads/" + createdThread.getId()))
                 .body(createdThread);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ThreadDto> update(@PathVariable Long id, @RequestBody ThreadDto threadDto){
-        ThreadDto updatedThread = threadService.update(id, threadDto);
+    public ResponseEntity<ThreadDto> updateThread(@PathVariable Long id, @RequestBody ThreadDto threadDto){
+        ThreadDto updatedThread = threadService.updateThread(id, threadDto);
         return ResponseEntity.ok(updatedThread);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        threadService.delete(id);
+    public ResponseEntity<Void> deleteThread(@PathVariable Long id) {
+        threadService.deleteThread(id);
         return ResponseEntity.noContent().build();
     }
 }

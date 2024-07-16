@@ -7,6 +7,9 @@ import com.example.imageboard.thread.ForumThread;
 import com.example.imageboard.thread.dto.ThreadDto;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class ThreadMapper {
 
@@ -47,6 +50,20 @@ public class ThreadMapper {
         thread.setUrl(threadDto.getUrl());
         forum.getThreads().add(thread);
         return thread;
+    }
+
+    public List<ThreadDto> toDtos(List<ForumThread> threads) {
+        return threads
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ForumThread> toEntity(List<ThreadDto> threadDtos) {
+        return threadDtos
+                .stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
     }
 }
 

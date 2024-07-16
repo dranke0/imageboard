@@ -21,25 +21,25 @@ public class ThreadService {
         this.threadMapper = threadMapper;
     }
 
-    public List<ThreadDto> getAll() {
+    public List<ThreadDto> getAllThreads() {
         return threadRepository.findAll()
                 .stream()
                 .map(threadMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public ThreadDto getById(Long id) {
+    public ThreadDto getThreadById(Long id) {
         return threadRepository.findById(id)
                 .map(threadMapper::toDto)
                 .orElseThrow(() -> new ThreadNotFoundException(id));
     }
 
-    public ThreadDto create(ThreadDto threadDto) {
+    public ThreadDto createThread(ThreadDto threadDto) {
         ForumThread thread = threadMapper.toEntity(threadDto);
         return threadMapper.toDto(threadRepository.save(thread));
     }
 
-    public ThreadDto update(Long id, ThreadDto threadDto) {
+    public ThreadDto updateThread(Long id, ThreadDto threadDto) {
         return threadRepository.findById(id)
                 .map(existingThread -> {
                     existingThread.setTitle(threadDto.getTitle());
@@ -50,8 +50,13 @@ public class ThreadService {
                 .orElseThrow(() -> new ThreadNotFoundException(id));
     }
 
-    public void delete(Long id) {
+    public void deleteThread(Long id) {
         threadRepository.findById(id);
+    }
+
+    public List<ThreadDto> getThreadsByForumId(Long forumId) {
+       List<ForumThread> threads = threadRepository.findByForumId(forumId);
+       return threadMapper.toDtos(threads);
     }
 }
 
