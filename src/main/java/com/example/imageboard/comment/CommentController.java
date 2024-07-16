@@ -24,9 +24,15 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommentDto> get(@PathVariable Long id) {
-        CommentDto commentDto = commentService.get(id);
+    public ResponseEntity<CommentDto> getById(@PathVariable Long id) {
+        CommentDto commentDto = commentService.getById(id);
         return ResponseEntity.ok(commentDto);
+    }
+
+    @GetMapping("/thread/{threadId}")
+    public ResponseEntity<List<CommentDto>> getByThreadId(@PathVariable Long threadId) {
+        List<CommentDto> comments = commentService.getByThreadId(threadId);
+        return ResponseEntity.ok(comments);
     }
 
     @PostMapping

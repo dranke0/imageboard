@@ -27,10 +27,14 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDto get(Long id) {
+    public CommentDto getById(Long id) {
         return commentRepository.findById(id)
                 .map(commentMapper::toDto)
                 .orElseThrow(() -> new CommentNotFoundException(id));
+    }
+
+    public List<CommentDto> getByThreadId(Long threadId) {
+        return commentRepository.findByThreadId(threadId);
     }
 
     public CommentDto create(CommentDto commentDto) {
