@@ -33,10 +33,6 @@ public class CommentService {
                 .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
-    public List<CommentDto> getByThreadId(Long threadId) {
-        return commentRepository.findByThreadId(threadId);
-    }
-
     public CommentDto create(CommentDto commentDto) {
         Comment comment = commentMapper.toEntity(commentDto);
         return commentMapper.toDto(commentRepository.save(comment));

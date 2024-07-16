@@ -25,8 +25,8 @@ public class ForumController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ForumDto> get(@PathVariable Long id) {
-        return ResponseEntity.ok(forumService.get(id));
+    public ResponseEntity<ForumDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(forumService.getById(id));
     }
 
     @PostMapping

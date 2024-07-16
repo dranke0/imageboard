@@ -24,8 +24,8 @@ public class ThreadController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ThreadDto> get(@PathVariable Long id) {
-        ThreadDto threadDto = threadService.get(id);
+    public ResponseEntity<ThreadDto> getById(@PathVariable Long id) {
+        ThreadDto threadDto = threadService.getById(id);
         return ResponseEntity.ok(threadDto);
     }
 

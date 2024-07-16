@@ -27,7 +27,7 @@ public class ForumService {
     }
 
 
-    public ForumDto get(Long id) {
+    public ForumDto getById(Long id) {
         return forumRepository.findById(id)
                 .map(forumMapper::toDto)
                 .orElseThrow(() -> new ForumNotFoundException(id));

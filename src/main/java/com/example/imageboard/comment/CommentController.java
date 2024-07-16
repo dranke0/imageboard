@@ -29,12 +29,6 @@ public class CommentController {
         return ResponseEntity.ok(commentDto);
     }
 
-    @GetMapping("/thread/{threadId}")
-    public ResponseEntity<List<CommentDto>> getByThreadId(@PathVariable Long threadId) {
-        List<CommentDto> comments = commentService.getByThreadId(threadId);
-        return ResponseEntity.ok(comments);
-    }
-
     @PostMapping
     public ResponseEntity<CommentDto> create(@RequestBody CommentDto commentDto) {
         CommentDto createdComment = commentService.create(commentDto);

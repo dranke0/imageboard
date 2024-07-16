@@ -28,7 +28,7 @@ public class ThreadService {
                 .collect(Collectors.toList());
     }
 
-    public ThreadDto get(Long id) {
+    public ThreadDto getById(Long id) {
         return threadRepository.findById(id)
                 .map(threadMapper::toDto)
                 .orElseThrow(() -> new ThreadNotFoundException(id));
