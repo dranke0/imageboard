@@ -29,7 +29,7 @@ public class ThreadController {
         return ResponseEntity.ok(threadDto);
     }
 
-    @GetMapping
+    @GetMapping("/forum/{forumId}")
     public ResponseEntity<List<ThreadDto>> getAllThreadsByForumId(@RequestParam(required = false) Long forumId) {
         List<ThreadDto> threads = forumId != null
                 ? threadService.getThreadsByForumId(forumId)
