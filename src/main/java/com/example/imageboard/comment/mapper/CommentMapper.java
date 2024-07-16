@@ -24,6 +24,7 @@ public class CommentMapper {
 
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
+        commentDto.setName(comment.getName());
         commentDto.setContent(comment.getContent());
         commentDto.setImageUrl(comment.getImageUrl());
         commentDto.setThreadId(comment.getThread().getId());
@@ -40,6 +41,7 @@ public class CommentMapper {
 
         Comment comment = new Comment();
         comment.setId(commentDto.getId());
+        comment.setName(commentDto.getName());
         comment.setContent(commentDto.getContent());
         comment.setImageUrl(commentDto.getImageUrl());
         comment.setThread(thread);

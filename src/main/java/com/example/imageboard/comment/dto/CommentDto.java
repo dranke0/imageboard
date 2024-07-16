@@ -7,6 +7,7 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
     private Long id;
+    private String name;
     private String content;
     private String imageUrl;
     private Long threadId;
@@ -14,8 +15,9 @@ public class CommentDto {
     public CommentDto() {
     }
 
-    public CommentDto(Long id, String content, String imageUrl, Long threadId) {
+    public CommentDto(Long id, String name, String content, String imageUrl, Long threadId) {
         this.id = id;
+        this.name = name;
         this.content = content;
         this.imageUrl = imageUrl;
         this.threadId = threadId;
@@ -27,6 +29,14 @@ public class CommentDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getContent() {
