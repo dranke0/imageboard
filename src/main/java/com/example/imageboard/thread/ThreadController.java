@@ -18,7 +18,7 @@ public class ThreadController {
     }
 
     // Endpoint to create a thread
-    @PostMapping("/{forumId}")
+    @PostMapping("forum/{forumId}")
     public ResponseEntity<ThreadDto> create(@PathVariable Long forumId, @RequestBody ThreadDto threadDto) {
         ThreadDto createdThread = threadService.create(forumId, threadDto);
         return ResponseEntity.created(URI.create("/api/threads/" + createdThread.getId()))
@@ -59,6 +59,5 @@ public class ThreadController {
         List<ThreadDto> threads = threadService.getByForumId(forumId);
         return ResponseEntity.ok(threads);
     }
-
 }
 
