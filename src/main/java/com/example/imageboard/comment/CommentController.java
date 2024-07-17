@@ -29,9 +29,9 @@ public class CommentController {
         return ResponseEntity.ok(commentDto);
     }
 
-    @PostMapping
-    public ResponseEntity<CommentDto> create(@RequestBody CommentDto commentDto) {
-        CommentDto createdComment = commentService.create(commentDto);
+    @PostMapping("/{threadId}")
+    public ResponseEntity<CommentDto> create(@PathVariable Long threadId, @RequestBody CommentDto commentDto) {
+        CommentDto createdComment = commentService.create(threadId, commentDto);
         return ResponseEntity.created(URI.create("/api/comments/" + createdComment.getId()))
                 .body(createdComment);
     }
@@ -48,6 +48,7 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 }
+
 
 
 

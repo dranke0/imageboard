@@ -40,9 +40,9 @@ public class CommentService {
         return commentMapper.toDto(comment);
     }
 
-    public CommentDto create(CommentDto commentDto) {
-        ForumThread thread = threadRepository.findById(commentDto.getThreadId())
-                .orElseThrow(() -> new ThreadNotFoundException(commentDto.getThreadId()));
+    public CommentDto create(Long threadId, CommentDto commentDto) {
+        ForumThread thread = threadRepository.findById(threadId)
+                .orElseThrow(() -> new ThreadNotFoundException(threadId));
 
         Comment comment = new Comment(thread, commentDto.getContent());
         comment.setCreatedAt(LocalDateTime.now());
@@ -56,10 +56,6 @@ public class CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundException(id));
 
-        ForumThread thread = threadRepository.findById(commentDto.getThreadId())
-                .orElseThrow(() -> new ThreadNotFoundException(commentDto.getThreadId()));
-
-        comment.setThread(thread);
         comment.setContent(commentDto.getContent());
         comment.setUpdatedAt(LocalDateTime.now());
 
