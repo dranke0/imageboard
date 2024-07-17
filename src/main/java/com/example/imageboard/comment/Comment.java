@@ -2,8 +2,6 @@ package com.example.imageboard.comment;
 
 import com.example.imageboard.thread.ForumThread;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,29 +14,25 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String content;
-
-    private String imageUrl;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id", referencedColumnName = "id")
     private ForumThread thread;
 
-    private String name;
+    @Column(nullable = false)
+    private String content;
 
-    @CreationTimestamp
+    @Column
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @Column
     private LocalDateTime updatedAt;
 
     public Comment() {
     }
 
-    public Comment(String content, String imageUrl, ForumThread thread) {
-        this.content = content;
-        this.imageUrl = imageUrl;
+    public Comment(ForumThread thread, String content) {
         this.thread = thread;
+        this.content = content;
     }
 
     public Long getId() {
@@ -49,22 +43,6 @@ public class Comment {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public ForumThread getThread() {
         return thread;
     }
@@ -73,20 +51,28 @@ public class Comment {
         this.thread = thread;
     }
 
-    public String getName() {
-        return name;
+    public String getContent() {
+        return content;
     }
 
-    public void setName(String name) {
-        this.name = Objects.equals(name, "") ? "Anonymous" : name;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
@@ -98,22 +84,17 @@ public class Comment {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", content='" + content + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
                 ", thread=" + thread +
-                ", name='" + name + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", content='" + content + '\'' +
                 '}';
     }
 }
-
 
 

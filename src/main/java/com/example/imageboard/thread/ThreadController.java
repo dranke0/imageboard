@@ -19,44 +19,44 @@ public class ThreadController {
 
     // Endpoint to create a thread
     @PostMapping("/{forumId}")
-    public ResponseEntity<ThreadDto> createThread(@PathVariable Long forumId, @RequestBody ThreadDto threadDto) {
-        ThreadDto createdThread = threadService.createThread(forumId, threadDto);
+    public ResponseEntity<ThreadDto> create(@PathVariable Long forumId, @RequestBody ThreadDto threadDto) {
+        ThreadDto createdThread = threadService.create(forumId, threadDto);
         return ResponseEntity.created(URI.create("/api/threads/" + createdThread.getId()))
                 .body(createdThread);
     }
 
     // Endpoint to update a thread within a specific forum
     @PutMapping("/{forumId}/{threadId}")
-    public ResponseEntity<ThreadDto> updateThread(@PathVariable Long forumId, @PathVariable Long threadId, @RequestBody ThreadDto threadDto){
-        ThreadDto updatedThread = threadService.updateThread(forumId, threadId, threadDto);
+    public ResponseEntity<ThreadDto> update(@PathVariable Long forumId, @PathVariable Long threadId, @RequestBody ThreadDto threadDto){
+        ThreadDto updatedThread = threadService.update(forumId, threadId, threadDto);
         return ResponseEntity.ok(updatedThread);
     }
 
     // Endpoint to delete a thread within a specific forum
     @DeleteMapping("/{forumId}/{threadId}")
-    public ResponseEntity<Void> deleteThread(@PathVariable Long forumId, @PathVariable Long threadId) {
-        threadService.deleteThread(forumId, threadId);
+    public ResponseEntity<Void> delete(@PathVariable Long forumId, @PathVariable Long threadId) {
+        threadService.delete(forumId, threadId);
         return ResponseEntity.noContent().build();
     }
 
     // Endpoint to get all threads
     @GetMapping
-    public ResponseEntity<List<ThreadDto>> getAllThreads() {
-        List<ThreadDto> threads = threadService.getAllThreads();
+    public ResponseEntity<List<ThreadDto>> getAll() {
+        List<ThreadDto> threads = threadService.getAll();
         return ResponseEntity.ok(threads);
     }
 
     // Endpoint to get a thread by ID
     @GetMapping("/{id}")
-    public ResponseEntity<ThreadDto> getThreadById(@PathVariable Long id) {
-        ThreadDto threadDto = threadService.getThreadById(id);
+    public ResponseEntity<ThreadDto> getById(@PathVariable Long id) {
+        ThreadDto threadDto = threadService.getById(id);
         return ResponseEntity.ok(threadDto);
     }
 
     // Endpoint to get all threads by forum ID
     @GetMapping("/forum/{forumId}")
-    public ResponseEntity<List<ThreadDto>> getAllThreadsByForumId(@PathVariable Long forumId) {
-        List<ThreadDto> threads = threadService.getThreadsByForumId(forumId);
+    public ResponseEntity<List<ThreadDto>> getAllByForumId(@PathVariable Long forumId) {
+        List<ThreadDto> threads = threadService.getByForumId(forumId);
         return ResponseEntity.ok(threads);
     }
 

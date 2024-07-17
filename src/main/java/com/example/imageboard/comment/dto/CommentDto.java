@@ -1,26 +1,18 @@
 package com.example.imageboard.comment.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.util.Objects;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
+
     private Long id;
-    private String name;
-    private String content;
-    private String imageUrl;
     private Long threadId;
+    private String content;
 
     public CommentDto() {
     }
 
-    public CommentDto(Long id, String name, String content, String imageUrl, Long threadId) {
+    public CommentDto(Long id, Long threadId, String content) {
         this.id = id;
-        this.name = name;
-        this.content = content;
-        this.imageUrl = imageUrl;
         this.threadId = threadId;
+        this.content = content;
     }
 
     public Long getId() {
@@ -31,12 +23,12 @@ public class CommentDto {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Long getThreadId() {
+        return threadId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setThreadId(Long threadId) {
+        this.threadId = threadId;
     }
 
     public String getContent() {
@@ -47,41 +39,13 @@ public class CommentDto {
         this.content = content;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Long getThreadId() {
-        return threadId;
-    }
-
-    public void setThreadId(Long threadId) {
-        this.threadId = threadId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CommentDto that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(threadId, that.threadId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, threadId);
-    }
-
     @Override
     public String toString() {
         return "CommentDto{" +
                 "id=" + id +
-                "content='" + content + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
                 ", threadId=" + threadId +
+                ", content='" + content + '\'' +
                 '}';
     }
 }
+

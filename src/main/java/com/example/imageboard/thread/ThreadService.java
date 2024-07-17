@@ -21,27 +21,27 @@ public class ThreadService {
         this.threadMapper = threadMapper;
     }
 
-    public List<ThreadDto> getAllThreads() {
+    public List<ThreadDto> getAll() {
         return threadRepository.findAll()
                 .stream()
                 .map(threadMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public ThreadDto getThreadById(Long id) {
+    public ThreadDto getById(Long id) {
         return threadRepository.findById(id)
                 .map(threadMapper::toDto)
                 .orElseThrow(() -> new ThreadNotFoundException(id));
     }
 
-    public ThreadDto createThread(Long forumId, ThreadDto threadDto) {
+    public ThreadDto create(Long forumId, ThreadDto threadDto) {
         // Map DTO to entity and set the forumId
         ForumThread thread = threadMapper.toEntity(threadDto);
         thread.setForumId(forumId);
         return threadMapper.toDto(threadRepository.save(thread));
     }
 
-    public ThreadDto updateThread(Long forumId, Long threadId, ThreadDto threadDto) {
+    public ThreadDto update(Long forumId, Long threadId, ThreadDto threadDto) {
         return threadRepository.findById(threadId)
                 .map(existingThread -> {
                     // Check if the existing thread belongs to the specified forum
@@ -57,7 +57,7 @@ public class ThreadService {
                 .orElseThrow(() -> new ThreadNotFoundException(threadId));
     }
 
-    public void deleteThread(Long forumId, Long threadId) {
+    public void delete(Long forumId, Long threadId) {
         threadRepository.findById(threadId)
                 .ifPresent(existingThread -> {
                     // Check if the existing thread belongs to the specified forum
@@ -68,7 +68,7 @@ public class ThreadService {
                 });
     }
 
-    public List<ThreadDto> getThreadsByForumId(Long forumId) {
+    public List<ThreadDto> getByForumId(Long forumId) {
         List<ForumThread> threads = threadRepository.findByForumId(forumId);
         return threadMapper.toDtos(threads);
     }
