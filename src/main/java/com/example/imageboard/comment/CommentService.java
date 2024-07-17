@@ -9,7 +9,6 @@ import com.example.imageboard.thread.exception.ThreadNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,26 +43,38 @@ public class CommentService {
         ForumThread thread = threadRepository.findById(threadId)
                 .orElseThrow(() -> new ThreadNotFoundException(threadId));
 
-        Comment comment = new Comment(thread, commentDto.getContent());
-        comment.setCreatedAt(LocalDateTime.now());
-        comment.setUpdatedAt(null); // or set to null initially
+        Comment comment = commentMapper.toEntity(commentDto);
+        comment.setThread(thread);
 
         Comment savedComment = commentRepository.save(comment);
         return commentMapper.toDto(savedComment);
     }
 
-    public void update(Long id, CommentDto commentDto) {
+    public CommentDto update(Long id, CommentDto commentDto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CommentNotFoundException(id));
 
         comment.setContent(commentDto.getContent());
-        comment.setUpdatedAt(LocalDateTime.now());
 
-        commentRepository.save(comment);
+        Comment updatedComment = commentRepository.save(comment);
+        return commentMapper.toDto(updatedComment);
     }
 
     public void delete(Long id) {
         commentRepository.deleteById(id);
+    }
+
+    public CommentDto findById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
+        return commentMapper.toDto(comment);
+    }
+
+    public List<CommentDto> findAllByThreadId(Long threadId) {
+        List<Comment> comments = commentRepository.findAllByThreadId(threadId);
+        return comments.stream()
+                .map(commentMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
 
