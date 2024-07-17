@@ -27,7 +27,6 @@ public class ThreadMapper {
                 thread.getId(),
                 thread.getTitle(),
                 thread.getForum().getId(),
-                thread.getName(),
                 thread.getContent(),
                 thread.getUrl()
         );
@@ -45,7 +44,6 @@ public class ThreadMapper {
         thread.setId(threadDto.getId());
         thread.setTitle(threadDto.getTitle());
         thread.setForum(forum);
-        thread.setName(threadDto.getName());
         thread.setContent(threadDto.getContent());
         thread.setUrl(threadDto.getUrl());
         forum.getThreads().add(thread);

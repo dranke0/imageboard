@@ -1,27 +1,24 @@
 package com.example.imageboard.thread.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.Objects;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThreadDto {
+
     private Long id;
     private String title;
     private Long forumId;
-    private String name;
     private String content;
     private String url;
 
     public ThreadDto() {
     }
 
-    public ThreadDto(Long id, String title, Long forumId, String name, String content, String url) {
+    public ThreadDto(Long id, String title, Long forumId, String content, String url) {
         this.id = id;
         this.title = title;
         this.forumId = forumId;
-        this.name = name;
         this.content = content;
         this.url = url;
     }
@@ -50,14 +47,6 @@ public class ThreadDto {
         this.forumId = forumId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getContent() {
         return content;
     }
@@ -77,8 +66,10 @@ public class ThreadDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ThreadDto threadDto)) return false;
-        return Objects.equals(id, threadDto.id) && Objects.equals(forumId, threadDto.forumId);
+        if (!(o instanceof ThreadDto)) return false;
+        ThreadDto threadDto = (ThreadDto) o;
+        return Objects.equals(id, threadDto.id) &&
+                Objects.equals(forumId, threadDto.forumId);
     }
 
     @Override
@@ -89,12 +80,13 @@ public class ThreadDto {
     @Override
     public String toString() {
         return "ThreadDto{" +
+                "id=" + id +
                 ", title='" + title + '\'' +
-                ", forumId='" + forumId + '\'' +
-                ", name='" + name + '\'' +
+                ", forumId=" + forumId +
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
                 '}';
     }
 }
+
 

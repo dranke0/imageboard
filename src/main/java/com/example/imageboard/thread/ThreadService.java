@@ -34,32 +34,45 @@ public class ThreadService {
                 .orElseThrow(() -> new ThreadNotFoundException(id));
     }
 
-    public ThreadDto createThread(ThreadDto threadDto) {
+    public ThreadDto createThread(Long forumId, ThreadDto threadDto) {
+        // Map DTO to entity and set the forumId
         ForumThread thread = threadMapper.toEntity(threadDto);
+        thread.setForumId(forumId);
         return threadMapper.toDto(threadRepository.save(thread));
     }
 
-    public ThreadDto updateThread(Long id, ThreadDto threadDto) {
-        return threadRepository.findById(id)
+    public ThreadDto updateThread(Long forumId, Long threadId, ThreadDto threadDto) {
+        return threadRepository.findById(threadId)
                 .map(existingThread -> {
+                    // Check if the existing thread belongs to the specified forum
+                    if (!existingThread.getForumId().equals(forumId)) {
+                        throw new IllegalArgumentException("Thread with id " + threadId + " does not belong to forum with id " + forumId);
+                    }
+                    // Update thread details
                     existingThread.setTitle(threadDto.getTitle());
                     existingThread.setContent(threadDto.getContent());
                     existingThread.setUrl(threadDto.getUrl());
                     return threadMapper.toDto(threadRepository.save(existingThread));
                 })
-                .orElseThrow(() -> new ThreadNotFoundException(id));
+                .orElseThrow(() -> new ThreadNotFoundException(threadId));
     }
 
-    public void deleteThread(Long id) {
-        threadRepository.findById(id);
+    public void deleteThread(Long forumId, Long threadId) {
+        threadRepository.findById(threadId)
+                .ifPresent(existingThread -> {
+                    // Check if the existing thread belongs to the specified forum
+                    if (!existingThread.getForumId().equals(forumId)) {
+                        throw new IllegalArgumentException("Thread with id " + threadId + " does not belong to forum with id " + forumId);
+                    }
+                    threadRepository.delete(existingThread);
+                });
     }
 
     public List<ThreadDto> getThreadsByForumId(Long forumId) {
-       List<ForumThread> threads = threadRepository.findByForumId(forumId);
-       return threadMapper.toDtos(threads);
+        List<ForumThread> threads = threadRepository.findByForumId(forumId);
+        return threadMapper.toDtos(threads);
     }
 }
-
 
 
 

@@ -26,8 +26,6 @@ public class ForumThread {
     @JoinColumn(name = "forum_id", referencedColumnName = "id")
     private Forum forum;
 
-    private String name;
-
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -46,10 +44,9 @@ public class ForumThread {
     public ForumThread() {
     }
 
-    public ForumThread(String title, Forum forum, String name, List<Comment> comments, String content, String url) {
+    public ForumThread(String title, Forum forum, List<Comment> comments, String content, String url) {
         this.title = title;
         this.forum = forum;
-        this.name = name;
         this.comments = comments;
         this.content = content;
         this.url = url;
@@ -76,7 +73,6 @@ public class ForumThread {
     }
 
     public void setForum(Forum forum) {
-
         if (this.forum != null) {
             this.forum.getThreads().remove(this);
         }
@@ -86,12 +82,15 @@ public class ForumThread {
         }
     }
 
-    public String getName() {
-        return name;
+    public Long getForumId() {
+        return forum != null ? forum.getId() : null;
     }
 
-    public void setName(String name) {
-        this.name = Objects.equals(name, "") ? "Anonymous" : name;
+    public void setForumId(Long forumId) {
+        if (forum == null) {
+            forum = new Forum();
+        }
+        forum.setId(forumId);
     }
 
     public List<Comment> getComments() {
@@ -99,7 +98,13 @@ public class ForumThread {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comments = comments != null ? new ArrayList<>(comments) : new ArrayList<>();
+        if (comments != null) {
+            this.comments.clear();
+            this.comments.addAll(comments);
+            comments.forEach(comment -> comment.setThread(this));
+        } else {
+            this.comments.clear();
+        }
     }
 
     public String getContent() {
@@ -131,12 +136,12 @@ public class ForumThread {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ForumThread that = (ForumThread) o;
-        return Objects.equals(id, that.id) && Objects.equals(forum.getId(), that.forum.getId());
+        return Objects.equals(id, that.id) && Objects.equals(forum != null ? forum.getId() : null, that.forum != null ? that.forum.getId() : null);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, forum.getId());
+        return Objects.hash(id, forum != null ? forum.getId() : null);
     }
 
     @Override
@@ -144,8 +149,7 @@ public class ForumThread {
         return "ForumThread{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", forum=" + forum +
-                ", name='" + name + '\'' +
+                ", forum=" + (forum != null ? forum.getId() : null) +
                 ", comments=" + comments +
                 ", content='" + content + '\'' +
                 ", url='" + url + '\'' +
@@ -154,5 +158,6 @@ public class ForumThread {
                 '}';
     }
 }
+
 
 
