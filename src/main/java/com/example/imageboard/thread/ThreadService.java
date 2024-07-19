@@ -70,7 +70,7 @@ public class ThreadService {
 
     public List<ThreadDto> getByForumId(Long forumId) {
         List<ForumThread> threads = threadRepository.findByForumId(forumId);
-        return threadMapper.toDtos(threads);
+        return threadMapper.toDto(threads);
     }
 }
 
