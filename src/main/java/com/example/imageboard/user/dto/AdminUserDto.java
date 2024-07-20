@@ -9,14 +9,17 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AdminUserDto extends AuthenticatedUserDto {
+public class AdminUserDto {
     // Additional fields for admin-specific information
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    AdminUserDto(Long id, String username, String email, String password, String avatarUrl, UserStatus status, List<String> roles) {
-        super(id, username, email, password, avatarUrl, status, roles);
-    }
+    private Long id;
+    private String username;
+    private String email;
+    private String password;
+    private String avatarUrl;
+    private UserStatus status;
+    private List<String> roles;
 }

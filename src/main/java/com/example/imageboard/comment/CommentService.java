@@ -6,6 +6,8 @@ import com.example.imageboard.comment.mapper.CommentMapper;
 import com.example.imageboard.thread.ForumThread;
 import com.example.imageboard.thread.ThreadRepository;
 import com.example.imageboard.thread.exception.ThreadNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,18 +15,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final ThreadRepository threadRepository;
     private final CommentMapper commentMapper;
-
-    public CommentService(CommentRepository commentRepository, ThreadRepository threadRepository, CommentMapper commentMapper) {
-        this.commentRepository = commentRepository;
-        this.threadRepository = threadRepository;
-        this.commentMapper = commentMapper;
-    }
 
     public List<CommentDto> getAll() {
         return commentRepository.findAll()

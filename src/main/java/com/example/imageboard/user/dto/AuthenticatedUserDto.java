@@ -2,13 +2,14 @@ package com.example.imageboard.user.dto;
 
 import com.example.imageboard.user.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthenticatedUserDto {
     private Long id;

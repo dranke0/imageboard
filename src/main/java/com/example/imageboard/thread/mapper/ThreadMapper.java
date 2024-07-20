@@ -3,6 +3,7 @@ package com.example.imageboard.thread.mapper;
 import com.example.imageboard.thread.ForumThread;
 import com.example.imageboard.thread.dto.ThreadDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 

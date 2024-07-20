@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>imageboardV2</artifactId>
+    <artifactId>imageboard</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>imageboard</name>
     <description>imageboard</description>

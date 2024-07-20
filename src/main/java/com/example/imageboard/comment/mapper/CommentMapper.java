@@ -3,14 +3,21 @@ package com.example.imageboard.comment.mapper;
 import com.example.imageboard.comment.Comment;
 import com.example.imageboard.comment.dto.CommentDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper
 public interface CommentMapper {
-    public CommentDto toDto(Comment comment);
-    public Comment toEntity(CommentDto commentDto);
-    public List<Comment> toEntity(List<CommentDto> commentDtos);
-    public List<CommentDto>toDto(List<Comment> comments);
+    @Mapping(source = "thread.id", target = "threadId")
+    @Mapping(target = "content", source = "content")
+    CommentDto toDto(Comment comment);
+
+    @Mapping(target = "thread", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    Comment toEntity(CommentDto commentDto);
+    List<Comment> toEntity(List<CommentDto> commentDtos);
+    List<CommentDto>toDto(List<Comment> comments);
 }
 
