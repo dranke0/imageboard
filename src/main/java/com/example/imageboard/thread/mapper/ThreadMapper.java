@@ -48,7 +48,7 @@ public class ThreadMapper implements Mapper<ThreadDto, ForumThread> {
                 .content(threadDto.getContent())
                 .url(threadDto.getUrl())
                 .build();
-                forum.getThreads().add(thread)
+                forum.getThreads().add(thread);
                 return thread;
     }
 
