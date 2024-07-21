@@ -9,8 +9,11 @@ import java.util.List;
 
 @Mapper
 public interface ThreadMapper {
-    ForumThread toEntity(ThreadDto threadDto);
+    @Mapping(target = "forumId", expression = "java(thread.getForum() != null ? thread.getForum().getId() : null)")
     ThreadDto toDto(ForumThread thread);
+    @Mapping(target = "forum", ignore = true)
+    @Mapping(target= "comments", ignore = true)
+    ForumThread toEntity(ThreadDto threadDto);
     List<ThreadDto>toDto(List<ForumThread> threads);
     List<ForumThread>toEntity(List<ThreadDto> threads);
 }

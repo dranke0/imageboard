@@ -23,6 +23,8 @@ public class Comment {
     @JoinColumn(name = "thread_id", referencedColumnName = "id")
     private ForumThread thread;
 
+    private Long threadId;
+
     @Column(nullable = false)
     private String content;
 
@@ -31,6 +33,10 @@ public class Comment {
 
     @Column
     private LocalDateTime updatedAt;
+
+    public Long getThreadId() {
+        return getThread().getId();
+    }
 }
 
 

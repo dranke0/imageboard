@@ -36,6 +36,7 @@ public class Forum {
     @OneToMany(mappedBy = "forum", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     // Optional FetchType.EAGER
     @JsonIgnore
+    @Builder.Default
     private List<ForumThread> threads = new ArrayList<>();
 
     @CreationTimestamp
