@@ -2,19 +2,20 @@ package com.example.imageboard.auth;
 
 import com.example.imageboard.email.EmailService;
 import com.example.imageboard.email.EmailTemplateName;
-import com.example.imageboard.role.RoleRepository;
 import com.example.imageboard.security.JwtService;
 import com.example.imageboard.token.Token;
 import com.example.imageboard.token.TokenRepository;
 import com.example.imageboard.user.User;
 import com.example.imageboard.user.UserRepository;
 
+import com.example.imageboard.user.UserRole;
 import com.example.imageboard.user.UserStatus;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final RoleRepository roleRepository;
     private final EmailService emailService;
     private final TokenRepository tokenRepository;
 
@@ -41,15 +41,13 @@ public class AuthenticationService {
     private String activationUrl;
 
     public void register(RegistrationRequest request) throws MessagingException {
-        var userRole = roleRepository.findByName("USER")
-                // todo - better exception handling
-                .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
-        var user = User.builder()
+
+        User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .status(UserStatus.ACTIVE)
-                .roles(List.of(userRole))
+                .role(UserRole.USER)
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);
@@ -67,7 +65,7 @@ public class AuthenticationService {
         var user = ((User) auth.getPrincipal());
         claims.put("username", user.getUsername());
 
-        var jwtToken = jwtService.generateToken(claims, (User) auth.getPrincipal());
+        var jwtToken = jwtService.generateToken((Map<String, Object>) claims, (UserDetails) auth.getPrincipal());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

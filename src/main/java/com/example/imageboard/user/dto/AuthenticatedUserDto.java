@@ -1,10 +1,9 @@
 package com.example.imageboard.user.dto;
 
+import com.example.imageboard.user.UserRole;
 import com.example.imageboard.user.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -18,5 +17,5 @@ public class AuthenticatedUserDto {
     private String password;
     private String avatarUrl;
     private UserStatus status;
-    private List<String> roles;
+    private UserRole role;
 }

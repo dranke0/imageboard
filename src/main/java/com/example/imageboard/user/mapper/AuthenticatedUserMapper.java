@@ -1,21 +1,38 @@
 package com.example.imageboard.user.mapper;
 
-import com.example.imageboard.role.Role;
 import com.example.imageboard.user.User;
 import com.example.imageboard.user.dto.AuthenticatedUserDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper
-public interface AuthenticatedUserMapper {
-    AuthenticatedUserDto toDto(User user);
+public class AuthenticatedUserMapper {
+    public AuthenticatedUserDto toDto(User user) {
+        return AuthenticatedUserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .avatarUrl(user.getAvatarUrl())
+                .build();
+    }
+    User toEntity(AuthenticatedUserDto authenticatedUserDto) {
+        return User.builder()
+                .id(authenticatedUserDto.getId())
+                .username(authenticatedUserDto.getUsername())
+                .email(authenticatedUserDto.getEmail())
+                .avatarUrl(authenticatedUserDto.getAvatarUrl())
+                .role(authenticatedUserDto.getRole())
+                .build();
+    }
 
-    default List<String> mapRolesToRoleNames(List<Role> roles) {
-        return roles.stream()
-                .map(Role::getName)
+    List<AuthenticatedUserDto> toDto(List<User> users) {
+        return users.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    List<User> toEntity(List<AuthenticatedUserDto> authenticatedUserDtos) {
+        return authenticatedUserDtos.stream()
+                .map(this::toEntity)
                 .collect(Collectors.toList());
     }
 }

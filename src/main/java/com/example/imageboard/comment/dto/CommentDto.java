@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentDto {
     private Long id;
+    private Long userId;
     private Long threadId;
     private String content;
 }

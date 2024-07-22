@@ -34,6 +34,7 @@ public class ForumThread {
     private Forum forum;
 
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)

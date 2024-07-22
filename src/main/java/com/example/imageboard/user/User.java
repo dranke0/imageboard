@@ -1,7 +1,6 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.comment.Comment;
-import com.example.imageboard.role.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -11,15 +10,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import static jakarta.persistence.FetchType.EAGER;
 
@@ -29,7 +22,7 @@ import static jakarta.persistence.FetchType.EAGER;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails, Principal {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,8 +38,9 @@ public class User implements UserDetails, Principal {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(fetch = EAGER)
-    private List<Role> roles;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -63,17 +57,4 @@ public class User implements UserDetails, Principal {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getName() {
-        return username;
-    }
 }

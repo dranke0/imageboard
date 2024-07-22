@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import com.example.imageboard.role.Role;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class UserService {
                 .username(userDto.getUsername().toLowerCase())
                 .email(userDto.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .roles(userDto.getRoles().stream().map(Role::new).toList())  // Assuming you have a way to get Role entities from role names
+                .role(userDto.getRole()) // Assuming you have a way to get Role entities from role names
                 .status(UserStatus.ACTIVE) // Set initial status to ACTIVE
                 .build();
 
@@ -77,8 +76,8 @@ public class UserService {
         }
 
         // Update roles if necessary
-        if (updatedUserDto.getRoles() != null) {
-            user.setRoles(updatedUserDto.getRoles().stream().map(Role::new).toList());
+        if (updatedUserDto.getRole() != null) {
+            user.setRole(updatedUserDto.getRole());
         }
 
         User savedUser = userRepository.save(user);

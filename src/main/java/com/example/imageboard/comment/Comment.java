@@ -1,6 +1,7 @@
 package com.example.imageboard.comment;
 
 import com.example.imageboard.thread.ForumThread;
+import com.example.imageboard.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,10 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id", referencedColumnName = "id")
     private ForumThread thread;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     private Long threadId;
 
