@@ -1,6 +1,7 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.comment.Comment;
+import com.example.imageboard.status.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -11,10 +12,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
-
-import static jakarta.persistence.FetchType.EAGER;
 
 @Entity
 @Table(name = "users")
@@ -38,13 +37,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @OneToMany(mappedBy ="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserForumRole> userForumRoles = new ArrayList<>();
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
 
     @URL
     private String avatarUrl;

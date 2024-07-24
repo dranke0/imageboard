@@ -8,7 +8,7 @@ import com.example.imageboard.token.TokenRepository;
 import com.example.imageboard.user.User;
 import com.example.imageboard.user.UserRepository;
 
-import com.example.imageboard.user.UserRole;
+import com.example.imageboard.user.Role;
 import com.example.imageboard.user.UserStatus;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .status(UserStatus.ACTIVE)
-                .role(UserRole.USER)
+                .role(Role.USER)
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);

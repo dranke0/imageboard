@@ -50,7 +50,7 @@ public class UserService {
                 .username(userDto.getUsername().toLowerCase())
                 .email(userDto.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .role(userDto.getRole()) // Assuming you have a way to get Role entities from role names
+                .role(userDto.getRole()) // Assuming you have a way to get role entities from role names
                 .status(UserStatus.ACTIVE) // Set initial status to ACTIVE
                 .build();
 

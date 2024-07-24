@@ -1,6 +1,6 @@
 package com.example.imageboard.user;
 
-public enum UserRole {
+public enum Role {
     USER,
     MODERATOR,
     ADMIN,
