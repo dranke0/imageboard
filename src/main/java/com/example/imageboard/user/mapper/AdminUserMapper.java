@@ -13,7 +13,7 @@ public class AdminUserMapper {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .avatarUrl(user.getAvatarUrl())
-                .role(user.getRole())
+                .role(null)
                 .build();
     }
     AdminUserDto toEntity(AdminUserDto adminUserDto) {

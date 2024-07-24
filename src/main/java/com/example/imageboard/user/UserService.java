@@ -1,5 +1,6 @@
 package com.example.imageboard.user;
 
+import com.example.imageboard.status.Status;
 import com.example.imageboard.user.dto.AuthenticatedUserDto;
 import com.example.imageboard.user.dto.PublicUserDto;
 import com.example.imageboard.user.exception.InvalidUserException;
@@ -50,8 +51,8 @@ public class UserService {
                 .username(userDto.getUsername().toLowerCase())
                 .email(userDto.getEmail().toLowerCase())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .role(userDto.getRole()) // Assuming you have a way to get role entities from role names
-                .status(UserStatus.ACTIVE) // Set initial status to ACTIVE
+                .userForumRoles(List.of()) // Assuming you have a way to get forum roles
+                .status(new Status()) // Set initial status to ACTIVE
                 .build();
 
         userRepository.save(user);
@@ -77,7 +78,7 @@ public class UserService {
 
         // Update roles if necessary
         if (updatedUserDto.getRole() != null) {
-            user.setRole(updatedUserDto.getRole());
+            user.setUserForumRoles(List.of());
         }
 
         User savedUser = userRepository.save(user);

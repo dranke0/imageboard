@@ -20,7 +20,7 @@ public class AuthenticatedUserMapper {
                 .username(authenticatedUserDto.getUsername())
                 .email(authenticatedUserDto.getEmail())
                 .avatarUrl(authenticatedUserDto.getAvatarUrl())
-                .role(authenticatedUserDto.getRole())
+                .userForumRoles(List.of()) // Assuming you have a way to get forum roles
                 .build();
     }
 

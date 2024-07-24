@@ -30,11 +30,13 @@ public class Role {
     @Column(nullable = false) // Non-null constraint
     private String description;
 
+    @Builder.Default
     @ElementCollection // Use @ElementCollection to represent a collection of basic values or embeddable objects
     @CollectionTable(name = "role_permissions", joinColumns = @JoinColumn(name = "role_id")) // Create a separate table for the permissions
     @Enumerated(EnumType.STRING) // Store the enum values as strings in the database
     private List<Permission> permissions = new ArrayList<>(); // Initialize the permissions list
 
+    @Builder.Default
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserForumRole> userForumRoles = new ArrayList<>();
 }

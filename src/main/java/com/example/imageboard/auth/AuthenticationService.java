@@ -6,10 +6,11 @@ import com.example.imageboard.security.JwtService;
 import com.example.imageboard.token.Token;
 import com.example.imageboard.token.TokenRepository;
 import com.example.imageboard.user.User;
+import com.example.imageboard.user.UserForumRole;
 import com.example.imageboard.user.UserRepository;
 
-import com.example.imageboard.user.Role;
-import com.example.imageboard.user.UserStatus;
+import com.example.imageboard.role.Role;
+import com.example.imageboard.status.Status;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -46,8 +49,8 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .status(UserStatus.ACTIVE)
-                .role(Role.USER)
+                .status(new Status())
+                .userForumRoles(new ArrayList<>())
                 .build();
         userRepository.save(user);
         sendValidationEmail(user);
@@ -83,7 +86,7 @@ public class AuthenticationService {
 
         var user = userRepository.findById(savedToken.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        user.setStatus(UserStatus.ACTIVE);
+        user.setStatus(new Status());
         userRepository.save(user);
 
         savedToken.setValidatedAt(LocalDateTime.now());

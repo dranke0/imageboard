@@ -37,6 +37,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Builder.Default
     @OneToMany(mappedBy ="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserForumRole> userForumRoles = new ArrayList<>();
 

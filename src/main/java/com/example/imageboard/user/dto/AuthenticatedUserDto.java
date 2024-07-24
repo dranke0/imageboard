@@ -1,7 +1,7 @@
 package com.example.imageboard.user.dto;
 
+import com.example.imageboard.status.Status;
 import com.example.imageboard.user.Role;
-import com.example.imageboard.user.UserStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -16,6 +16,6 @@ public class AuthenticatedUserDto {
     private String email;
     private String password;
     private String avatarUrl;
-    private UserStatus status;
+    private Status status;
     private Role role;
 }
