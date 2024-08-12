@@ -1,18 +1,15 @@
 package com.example.imageboard.user;
 
 import com.example.imageboard.status.Status;
-import com.example.imageboard.user.dto.AuthenticatedUserDto;
-import com.example.imageboard.user.dto.PublicUserDto;
+import com.example.imageboard.user.dto.UserDto;
 import com.example.imageboard.user.exception.InvalidUserException;
-import com.example.imageboard.user.mapper.AuthenticatedUserMapper;
-import com.example.imageboard.user.mapper.PublicUserMapper;
+import com.example.imageboard.user.mapper.UserMapper;
 import com.example.imageboard.user.validator.UserValidator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -23,74 +20,67 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final PublicUserMapper publicUserMapper;
-    private final AuthenticatedUserMapper authenticatedUserMapper;
+    private final UserMapper userMapper;
     private final UserValidator userValidator;
 
-    public List<PublicUserDto> getAllUsers() {
+    // Get all users
+    public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map(publicUserMapper::toDto)
+                .map(userMapper::userToUserDTO)
                 .toList();
     }
 
-    public PublicUserDto getUserById(Long id) {
+    // Get user by ID
+    public UserDto getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
-        return publicUserMapper.toDto(user);
+        return userMapper.userToUserDTO(user);
     }
 
+    // Create a new user (registration)
     @Transactional
-    public AuthenticatedUserDto createUser(AuthenticatedUserDto userDto, BindingResult bindingResult) throws InvalidUserException {
-        userValidator.validate(userDto, bindingResult);
-        if (bindingResult.hasErrors()) {
-            throw new InvalidUserException(bindingResult);
-        }
+    public UserDto createUser(UserDto userDto) throws InvalidUserException {
 
+        // Map DTO to entity and set additional fields
         User user = User.builder()
-                .username(userDto.getUsername().toLowerCase())
-                .email(userDto.getEmail().toLowerCase())
+                .username(userDto.getUsername().toLowerCase().trim())
+                .email(userDto.getEmail().toLowerCase().trim())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .userForumRoles(List.of()) // Assuming you have a way to get forum roles
-                .status(new Status()) // Set initial status to ACTIVE
+                .status(Status.valueOf("ACTIVE"))
                 .build();
 
-        userRepository.save(user);
-        return authenticatedUserMapper.toDto(user);
+        // Save the new user
+        User savedUser = userRepository.save(user);
+        return userMapper.userToUserDTO(savedUser);
     }
 
+    // Update an existing user
     @Transactional
-    public AuthenticatedUserDto updateUser(Long id, AuthenticatedUserDto updatedUserDto) {
+    public UserDto updateUser(Long id, UserDto userDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
-        if (updatedUserDto.getUsername() != null) {
-            user.setUsername(updatedUserDto.getUsername().toLowerCase().trim());
-        }
+        // Use the update method to create a new instance with updated fields
+        User updatedUser = User.builder()
+                .username(userDto.getUsername().toLowerCase().trim())
+                .email(userDto.getEmail().toLowerCase().trim())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .avatarUrl(userDto.getAvatarUrl())
+                .status(userDto.getStatus() != null ? Status.valueOf(userDto.getStatus().toUpperCase()))
+                .build();
 
-        if (updatedUserDto.getEmail() != null) {
-            user.setEmail(updatedUserDto.getEmail().toLowerCase().trim());
-        }
-
-        if (updatedUserDto.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updatedUserDto.getPassword()));
-        }
-
-        // Update roles if necessary
-        if (updatedUserDto.getRole() != null) {
-            user.setUserForumRoles(List.of());
-        }
-
-        User savedUser = userRepository.save(user);
-        return authenticatedUserMapper.toDto(savedUser);
+        // Save and return the updated user
+        User savedUser = userRepository.save(updatedUser);
+        return userMapper.userToUserDTO(savedUser);
     }
 
+    // Delete a user by ID
     @Transactional
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("User not found with id: " + id);
+        }
         userRepository.deleteById(id);
     }
 }
-
-
-
-

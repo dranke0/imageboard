@@ -1,30 +1,28 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.comment.Comment;
 import com.example.imageboard.status.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
-@Builder
+@Getter
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -35,11 +33,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String password;
-
-    @Builder.Default
-    @OneToMany(mappedBy ="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserForumRole> userForumRoles = new ArrayList<>();
+    private final String password;
 
     @ManyToOne
     @JoinColumn(name = "status_id")
@@ -47,9 +41,6 @@ public class User {
 
     @URL
     private String avatarUrl;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

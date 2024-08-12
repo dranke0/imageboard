@@ -1,7 +1,6 @@
 package com.example.imageboard.user;
 
-import com.example.imageboard.user.dto.AuthenticatedUserDto;
-import com.example.imageboard.user.dto.PublicUserDto;
+import com.example.imageboard.user.dto.UserDto;
 import com.example.imageboard.user.exception.InvalidUserException;
 import com.example.imageboard.user.exception.ErrorResponse; // Assuming you have this class
 import jakarta.validation.Valid;
@@ -23,33 +22,29 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<PublicUserDto>> getAllUsers() {
-        List<PublicUserDto> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PublicUserDto> getUserById(@PathVariable Long id) {
-        PublicUserDto userDto = userService.getUserById(id);
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+        UserDto userDto = userService.getUserById(id);
         return ResponseEntity.ok(userDto);
     }
 
     @PostMapping
-    public ResponseEntity<AuthenticatedUserDto> createUser(@Valid @RequestBody AuthenticatedUserDto userDto, BindingResult bindingResult) throws InvalidUserException {
-        if (bindingResult.hasErrors()) {
-            throw new InvalidUserException(bindingResult);
-        }
-        AuthenticatedUserDto createdUserDto = userService.createUser(userDto, bindingResult);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserAuthDTO userDto) throws InvalidUserException {
+        UserAuthDTO createdUserDto = userService.createUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("#id == authentication.principal.id or hasAuthority('ADMIN')")
-    public ResponseEntity<AuthenticatedUserDto> updateUser(@PathVariable Long id, @Valid @RequestBody AuthenticatedUserDto userDto, BindingResult bindingResult) throws InvalidUserException {
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto, BindingResult bindingResult) throws InvalidUserException {
         if (bindingResult.hasErrors()) {
             throw new InvalidUserException(bindingResult);
         }
-        AuthenticatedUserDto updatedUserDto = userService.updateUser(id, userDto);
+        UserAuthDTO updatedUserDto = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUserDto);
     }
 
